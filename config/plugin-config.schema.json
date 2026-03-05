@@ -1,0 +1,141 @@
+{
+  "configKeys": [
+    "ARCADE555_BASE_URL",
+    "STREAM555_BASE_URL",
+    "ARCADE555_AGENT_API_KEY",
+    "ARCADE555_AGENT_TOKEN",
+    "STREAM555_AGENT_API_KEY",
+    "STREAM555_AGENT_TOKEN",
+    "STREAM_API_BEARER_TOKEN",
+    "ARCADE555_DEFAULT_SESSION_ID",
+    "ARCADE555_REQUIRE_APPROVALS",
+    "ARCADE555_SCORE_CAPTURE_API_URL",
+    "ARCADE555_LEADERBOARD_API_URL",
+    "ARCADE555_QUESTS_API_URL",
+    "ARCADE555_BATTLES_API_URL",
+    "ARCADE555_BATTLES_CREATE_ENDPOINT",
+    "ARCADE555_REWARDS_API_URL",
+    "ARCADE555_SOCIAL_API_URL",
+    "ARCADE555_ADMIN_API_URL",
+    "ARCADE555_ADMIN_BEARER_TOKEN",
+    "ARCADE555_GITHUB_TOKEN"
+  ],
+  "pluginParameters": {
+    "ARCADE555_BASE_URL": {
+      "type": "string",
+      "description": "Arcade control-plane base URL"
+    },
+    "STREAM555_BASE_URL": {
+      "type": "string",
+      "description": "Shared 555 base URL fallback for arcade"
+    },
+    "ARCADE555_AGENT_API_KEY": {
+      "type": "string",
+      "description": "Arcade API key used for short-lived token exchange",
+      "sensitive": true
+    },
+    "ARCADE555_AGENT_TOKEN": {
+      "type": "string",
+      "description": "Arcade static bearer token",
+      "sensitive": true
+    },
+    "STREAM555_AGENT_API_KEY": {
+      "type": "string",
+      "description": "Shared stream API key fallback",
+      "sensitive": true
+    },
+    "STREAM555_AGENT_TOKEN": {
+      "type": "string",
+      "description": "Shared stream bearer token fallback",
+      "sensitive": true
+    },
+    "STREAM_API_BEARER_TOKEN": {
+      "type": "string",
+      "description": "Legacy shared bearer token fallback",
+      "sensitive": true
+    },
+    "ARCADE555_DEFAULT_SESSION_ID": {
+      "type": "string",
+      "description": "Preferred arcade session ID"
+    },
+    "ARCADE555_REQUIRE_APPROVALS": {
+      "type": "boolean",
+      "description": "Require approvals for mutating arcade actions",
+      "default": true
+    },
+    "ARCADE555_SCORE_CAPTURE_API_URL": {
+      "type": "string",
+      "description": "Optional score capture API base URL"
+    },
+    "ARCADE555_LEADERBOARD_API_URL": {
+      "type": "string",
+      "description": "Optional leaderboard API base URL"
+    },
+    "ARCADE555_QUESTS_API_URL": {
+      "type": "string",
+      "description": "Optional quests API base URL"
+    },
+    "ARCADE555_BATTLES_API_URL": {
+      "type": "string",
+      "description": "Optional battles API base URL"
+    },
+    "ARCADE555_BATTLES_CREATE_ENDPOINT": {
+      "type": "string",
+      "description": "Optional battles create endpoint override"
+    },
+    "ARCADE555_REWARDS_API_URL": {
+      "type": "string",
+      "description": "Optional rewards API base URL"
+    },
+    "ARCADE555_SOCIAL_API_URL": {
+      "type": "string",
+      "description": "Optional social API base URL"
+    },
+    "ARCADE555_ADMIN_API_URL": {
+      "type": "string",
+      "description": "Optional admin API base URL"
+    },
+    "ARCADE555_ADMIN_BEARER_TOKEN": {
+      "type": "string",
+      "description": "Optional admin bearer token",
+      "sensitive": true
+    },
+    "ARCADE555_GITHUB_TOKEN": {
+      "type": "string",
+      "description": "Optional GitHub token for repo listing",
+      "sensitive": true
+    }
+  },
+  "configUiHints": {
+    "ARCADE555_BASE_URL": { "hidden": true },
+    "STREAM555_BASE_URL": { "hidden": true },
+    "ARCADE555_AGENT_API_KEY": { "hidden": true },
+    "ARCADE555_AGENT_TOKEN": { "hidden": true },
+    "STREAM555_AGENT_API_KEY": { "hidden": true },
+    "STREAM555_AGENT_TOKEN": { "hidden": true },
+    "STREAM_API_BEARER_TOKEN": { "hidden": true },
+    "ARCADE555_DEFAULT_SESSION_ID": { "hidden": true },
+    "ARCADE555_SCORE_CAPTURE_API_URL": { "hidden": true },
+    "ARCADE555_LEADERBOARD_API_URL": { "hidden": true },
+    "ARCADE555_QUESTS_API_URL": { "hidden": true },
+    "ARCADE555_BATTLES_API_URL": { "hidden": true },
+    "ARCADE555_BATTLES_CREATE_ENDPOINT": { "hidden": true },
+    "ARCADE555_REWARDS_API_URL": { "hidden": true },
+    "ARCADE555_SOCIAL_API_URL": { "hidden": true },
+    "ARCADE555_ADMIN_API_URL": { "hidden": true },
+    "ARCADE555_ADMIN_BEARER_TOKEN": { "hidden": true },
+    "ARCADE555_GITHUB_TOKEN": { "hidden": true },
+    "ARCADE555_REQUIRE_APPROVALS": {
+      "label": "Require approvals",
+      "group": "Advanced",
+      "advanced": true,
+      "order": 90,
+      "type": "radio",
+      "options": [
+        { "value": "true", "label": "Enabled" },
+        { "value": "false", "label": "Disabled" }
+      ],
+      "help": "Require approval prompts for mutating arcade actions."
+    }
+  }
+}

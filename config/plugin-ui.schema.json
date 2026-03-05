@@ -1,0 +1,93 @@
+{
+  "version": "1",
+  "nouns": {
+    "collectionLabel": "Games"
+  },
+  "sections": [
+    {
+      "id": "connection",
+      "title": "Connection",
+      "order": 10,
+      "summary": [
+        "installed",
+        "enabled",
+        "loaded",
+        "authenticated",
+        "ready"
+      ]
+    },
+    {
+      "id": "session",
+      "title": "Session",
+      "order": 20,
+      "actions": [
+        "verify",
+        "bootstrap",
+        "catalog"
+      ]
+    },
+    {
+      "id": "games",
+      "title": "Games",
+      "order": 30,
+      "actions": [
+        "play",
+        "switch",
+        "stop"
+      ]
+    },
+    {
+      "id": "leaderboard",
+      "title": "Leaderboard",
+      "order": 40
+    },
+    {
+      "id": "quests",
+      "title": "Quests",
+      "order": 50
+    },
+    {
+      "id": "scores",
+      "title": "Scores",
+      "order": 60
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced",
+      "order": 90,
+      "advanced": true
+    }
+  ],
+  "actions": {
+    "verify": {
+      "label": "Verify",
+      "variant": "secondary",
+      "invokes": "ARCADE555_AUTH_VERIFY"
+    },
+    "bootstrap": {
+      "label": "Bootstrap Session",
+      "variant": "primary",
+      "invokes": "ARCADE555_SESSION_BOOTSTRAP"
+    },
+    "catalog": {
+      "label": "Fetch Catalog",
+      "variant": "secondary",
+      "invokes": "ARCADE555_GAMES_CATALOG"
+    },
+    "play": {
+      "label": "Play",
+      "variant": "primary",
+      "invokes": "ARCADE555_GAMES_PLAY"
+    },
+    "switch": {
+      "label": "Switch",
+      "variant": "secondary",
+      "invokes": "ARCADE555_GAMES_SWITCH"
+    },
+    "stop": {
+      "label": "Stop",
+      "variant": "danger",
+      "invokes": "ARCADE555_GAMES_STOP"
+    }
+  }
+}

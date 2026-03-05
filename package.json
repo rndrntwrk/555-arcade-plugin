@@ -9,10 +9,43 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./mastery": {
+      "import": "./dist/mastery/index.js",
+      "types": "./dist/mastery/index.d.ts"
+    },
+    "./intelligence": {
+      "import": "./dist/intelligence/index.js",
+      "types": "./dist/intelligence/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
+    },
+    "./milaidy": {
+      "import": "./dist/milaidy/factory.js",
+      "types": "./dist/milaidy/factory.d.ts"
+    },
+    "./openapi": {
+      "import": "./dist/openapi/fragments.js",
+      "types": "./dist/openapi/fragments.d.ts"
+    },
+    "./compat": {
+      "import": "./dist/compat/index.js",
+      "types": "./dist/compat/index.d.ts"
+    },
+    "./lib/transport/action-kit": {
+      "import": "./dist/lib/transport/action-kit.js",
+      "types": "./dist/lib/transport/action-kit.d.ts"
+    },
+    "./lib/transport/agent-auth": {
+      "import": "./dist/lib/transport/agent-auth.js",
+      "types": "./dist/lib/transport/agent-auth.d.ts"
     }
   },
   "files": [
     "dist",
+    "config",
     "README.md",
     "LICENSE",
     "docs",
@@ -50,8 +83,65 @@
         "type": "boolean",
         "description": "Require approvals for mutating actions",
         "default": true
+      },
+      "ARCADE555_SCORE_CAPTURE_API_URL": {
+        "type": "string",
+        "description": "Optional score capture API base URL (fallback: FIVE55_SCORE_CAPTURE_API_URL)",
+        "required": false
+      },
+      "ARCADE555_LEADERBOARD_API_URL": {
+        "type": "string",
+        "description": "Optional leaderboard API base URL (fallback: FIVE55_LEADERBOARD_API_URL)",
+        "required": false
+      },
+      "ARCADE555_QUESTS_API_URL": {
+        "type": "string",
+        "description": "Optional quests API base URL (fallback: FIVE55_QUESTS_API_URL)",
+        "required": false
+      },
+      "ARCADE555_BATTLES_API_URL": {
+        "type": "string",
+        "description": "Optional battles API base URL (fallback: FIVE55_BATTLES_API_URL)",
+        "required": false
+      },
+      "ARCADE555_BATTLES_CREATE_ENDPOINT": {
+        "type": "string",
+        "description": "Optional battles create endpoint override (fallback: FIVE55_BATTLES_CREATE_ENDPOINT)",
+        "required": false
+      },
+      "ARCADE555_REWARDS_API_URL": {
+        "type": "string",
+        "description": "Optional rewards API base URL (fallback: FIVE55_REWARDS_API_URL)",
+        "required": false
+      },
+      "ARCADE555_SOCIAL_API_URL": {
+        "type": "string",
+        "description": "Optional social API base URL (fallback: FIVE55_SOCIAL_API_URL)",
+        "required": false
+      },
+      "ARCADE555_ADMIN_API_URL": {
+        "type": "string",
+        "description": "Optional admin API base URL (fallbacks include FIVE55_ADMIN_API_URL and legacy admin env vars)",
+        "required": false
+      },
+      "ARCADE555_ADMIN_BEARER_TOKEN": {
+        "type": "string",
+        "description": "Optional admin bearer token (fallbacks include FIVE55_ADMIN_BEARER_TOKEN and legacy admin token env vars)",
+        "required": false,
+        "sensitive": true
+      },
+      "ARCADE555_GITHUB_TOKEN": {
+        "type": "string",
+        "description": "Optional GitHub token for repo listing (fallback: GITHUB_API_TOKEN / ALICE_GH_TOKEN)",
+        "required": false,
+        "sensitive": true
       }
     }
+  },
+  "elizaos": {
+    "displayName": "555 Arcade",
+    "configSchemaFile": "./config/plugin-config.schema.json",
+    "pluginUiSchemaFile": "./config/plugin-ui.schema.json"
   },
   "keywords": [
     "elizaos",

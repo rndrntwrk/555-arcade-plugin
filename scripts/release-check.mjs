@@ -20,5 +20,22 @@ if (!pkg.name || !pkg.version) {
   process.exit(1);
 }
 
-console.log("[release-check] ok");
+const requiredExports = [
+  ".",
+  "./mastery",
+  "./intelligence",
+  "./types",
+  "./milaidy",
+  "./openapi",
+  "./compat",
+  "./lib/transport/action-kit",
+  "./lib/transport/agent-auth",
+];
+const exportedKeys = pkg.exports ? Object.keys(pkg.exports) : [];
+const missingExports = requiredExports.filter((entry) => !exportedKeys.includes(entry));
+if (missingExports.length > 0) {
+  console.error(`[release-check] missing package exports: ${missingExports.join(", ")}`);
+  process.exit(1);
+}
 
+console.log("[release-check] ok");
