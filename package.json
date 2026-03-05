@@ -1,0 +1,86 @@
+{
+  "name": "@rndrntwrk/plugin-555arcade",
+  "version": "0.1.0",
+  "description": "elizaOS plugin for controlling 555 arcade game, quest, leaderboard, and learning operations via Agent API",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "docs",
+    "skills",
+    "elizaos.plugin.json"
+  ],
+  "scripts": {
+    "build": "bun run clean && tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "release:check": "node ./scripts/release-check.mjs",
+    "prepublishOnly": "bun run build"
+  },
+  "agentConfig": {
+    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginParameters": {
+      "ARCADE555_BASE_URL": {
+        "type": "string",
+        "description": "Arcade control-plane base URL",
+        "required": false
+      },
+      "ARCADE555_AGENT_TOKEN": {
+        "type": "string",
+        "description": "Agent token for arcade API",
+        "required": false,
+        "sensitive": true
+      },
+      "ARCADE555_DEFAULT_SESSION_ID": {
+        "type": "string",
+        "description": "Optional session ID to auto-bind",
+        "required": false
+      },
+      "ARCADE555_REQUIRE_APPROVALS": {
+        "type": "boolean",
+        "description": "Require approvals for mutating actions",
+        "default": true
+      }
+    }
+  },
+  "keywords": [
+    "elizaos",
+    "plugin",
+    "arcade",
+    "games",
+    "leaderboard",
+    "quests",
+    "555"
+  ],
+  "author": "rndrntwrk",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rndrntwrk/555-arcade-plugin.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rndrntwrk/555-arcade-plugin/issues"
+  },
+  "homepage": "https://github.com/rndrntwrk/555-arcade-plugin#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependencies": {
+    "@elizaos/core": "^1.7.0"
+  },
+  "devDependencies": {
+    "@elizaos/core": "^1.7.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

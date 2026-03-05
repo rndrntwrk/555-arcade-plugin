@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "@rndrntwrk/plugin-555arcade",
+  "displayName": "555 Arcade",
+  "description": "Unified 555 arcade plugin for auth/session bootstrapping, game control, quests, leaderboard, score capture, and learning telemetry.",
+  "category": "gaming",
+  "tags": [
+    "arcade",
+    "games",
+    "leaderboard",
+    "quests",
+    "555"
+  ],
+  "quickstart": {
+    "steps": [
+      "Set ARCADE555_BASE_URL and ARCADE555_AGENT_TOKEN (or rely on STREAM555_* fallback).",
+      "Run ARCADE555_HEALTHCHECK and ARCADE555_SESSION_BOOTSTRAP.",
+      "Run ARCADE555_GAMES_CATALOG then ARCADE555_GAMES_PLAY."
+    ],
+    "docs": [
+      "README.md",
+      "docs/QUICKSTART_3_STEPS.md",
+      "docs/OPERATOR_SETUP_MATRIX.md",
+      "docs/MILAIDY_WEB_ACCESS.md"
+    ]
+  },
+  "actions": {
+    "prefix": "ARCADE555_",
+    "approvalRequiredByDefault": true
+  }
+}
+
