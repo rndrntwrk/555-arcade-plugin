@@ -20,6 +20,7 @@ It replaces fragmented `five55-*` arcade control surfaces with one plugin and on
 
 ## Public docs
 
+- `docs/PLUGIN_PUBLIC_STANDARD.md`
 - `docs/GET_STARTED.md`
 - `docs/INSTALL_AND_AUTH.md`
 - `docs/ACTIONS_REFERENCE.md`
