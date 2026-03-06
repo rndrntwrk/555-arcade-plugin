@@ -22,8 +22,7 @@
       "order": 20,
       "actions": [
         "verify",
-        "bootstrap",
-        "catalog"
+        "bootstrap"
       ]
     },
     {
@@ -31,25 +30,20 @@
       "title": "Games",
       "order": 30,
       "actions": [
+        "catalog",
         "play",
         "switch",
         "stop"
       ]
     },
     {
-      "id": "leaderboard",
-      "title": "Leaderboard",
-      "order": 40
-    },
-    {
-      "id": "quests",
-      "title": "Quests",
-      "order": 50
-    },
-    {
-      "id": "scores",
-      "title": "Scores",
-      "order": 60
+      "id": "progress",
+      "title": "Progress",
+      "order": 40,
+      "actions": [
+        "leaderboard",
+        "quests"
+      ]
     },
     {
       "id": "advanced",
@@ -88,6 +82,16 @@
       "label": "Stop",
       "variant": "danger",
       "invokes": "ARCADE555_GAMES_STOP"
+    },
+    "leaderboard": {
+      "label": "Read Leaderboard",
+      "variant": "secondary",
+      "invokes": "ARCADE555_LEADERBOARD_READ"
+    },
+    "quests": {
+      "label": "Read Quests",
+      "variant": "secondary",
+      "invokes": "ARCADE555_QUESTS_READ"
     }
   }
 }

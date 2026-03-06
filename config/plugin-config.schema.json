@@ -1,5 +1,11 @@
 {
   "configKeys": [
+    "ARCADE555_DEFAULT_SESSION_ID",
+    "ARCADE555_REQUIRE_APPROVALS",
+    "ARCADE555_GAMES_API_DIALECT",
+    "ARCADE555_CF_CONNECT_TIMEOUT_MS",
+    "ARCADE555_CF_CONNECT_POLL_MS",
+    "ARCADE555_CF_RECOVERY_ATTEMPTS",
     "ARCADE555_BASE_URL",
     "STREAM555_BASE_URL",
     "ARCADE555_AGENT_API_KEY",
@@ -7,8 +13,6 @@
     "STREAM555_AGENT_API_KEY",
     "STREAM555_AGENT_TOKEN",
     "STREAM_API_BEARER_TOKEN",
-    "ARCADE555_DEFAULT_SESSION_ID",
-    "ARCADE555_REQUIRE_APPROVALS",
     "ARCADE555_SCORE_CAPTURE_API_URL",
     "ARCADE555_LEADERBOARD_API_URL",
     "ARCADE555_QUESTS_API_URL",
@@ -63,6 +67,22 @@
       "description": "Require approvals for mutating arcade actions",
       "default": true
     },
+    "ARCADE555_GAMES_API_DIALECT": {
+      "type": "string",
+      "description": "Arcade gameplay transport dialect. Prefer agent-v1 for canonical session control."
+    },
+    "ARCADE555_CF_CONNECT_TIMEOUT_MS": {
+      "type": "string",
+      "description": "Cloudflare connect timeout in milliseconds for go-live gameplay recovery."
+    },
+    "ARCADE555_CF_CONNECT_POLL_MS": {
+      "type": "string",
+      "description": "Cloudflare provisioning poll interval in milliseconds."
+    },
+    "ARCADE555_CF_RECOVERY_ATTEMPTS": {
+      "type": "string",
+      "description": "Maximum recovery attempts before surfacing gameplay degradation."
+    },
     "ARCADE555_SCORE_CAPTURE_API_URL": {
       "type": "string",
       "description": "Optional score capture API base URL"
@@ -114,7 +134,6 @@
     "STREAM555_AGENT_API_KEY": { "hidden": true },
     "STREAM555_AGENT_TOKEN": { "hidden": true },
     "STREAM_API_BEARER_TOKEN": { "hidden": true },
-    "ARCADE555_DEFAULT_SESSION_ID": { "hidden": true },
     "ARCADE555_SCORE_CAPTURE_API_URL": { "hidden": true },
     "ARCADE555_LEADERBOARD_API_URL": { "hidden": true },
     "ARCADE555_QUESTS_API_URL": { "hidden": true },
@@ -125,6 +144,13 @@
     "ARCADE555_ADMIN_API_URL": { "hidden": true },
     "ARCADE555_ADMIN_BEARER_TOKEN": { "hidden": true },
     "ARCADE555_GITHUB_TOKEN": { "hidden": true },
+    "ARCADE555_DEFAULT_SESSION_ID": {
+      "label": "Default Session ID",
+      "group": "Session",
+      "order": 10,
+      "placeholder": "Reuse an existing session ID or leave blank for auto",
+      "help": "Preferred session to bind when bootstrapping from the operator panel."
+    },
     "ARCADE555_REQUIRE_APPROVALS": {
       "label": "Require approvals",
       "group": "Advanced",
@@ -136,6 +162,46 @@
         { "value": "false", "label": "Disabled" }
       ],
       "help": "Require approval prompts for mutating arcade actions."
+    },
+    "ARCADE555_GAMES_API_DIALECT": {
+      "label": "Gameplay API Dialect",
+      "group": "Advanced",
+      "advanced": true,
+      "order": 20,
+      "type": "select",
+      "options": [
+        { "value": "agent-v1", "label": "Agent v1 (recommended)" },
+        { "value": "five55-web", "label": "five55-web" },
+        { "value": "milaidy-proxy", "label": "Milaidy proxy" }
+      ],
+      "help": "Preferred transport for game catalog, play, switch, and stop actions."
+    },
+    "ARCADE555_CF_CONNECT_TIMEOUT_MS": {
+      "label": "Cloudflare Connect Timeout (ms)",
+      "group": "Advanced",
+      "advanced": true,
+      "order": 30,
+      "type": "number",
+      "placeholder": "90000",
+      "help": "Wait time for Cloudflare gameplay output provisioning before recovery."
+    },
+    "ARCADE555_CF_CONNECT_POLL_MS": {
+      "label": "Cloudflare Poll Interval (ms)",
+      "group": "Advanced",
+      "advanced": true,
+      "order": 40,
+      "type": "number",
+      "placeholder": "1500",
+      "help": "Polling interval used while waiting for Cloudflare output readiness."
+    },
+    "ARCADE555_CF_RECOVERY_ATTEMPTS": {
+      "label": "Cloudflare Recovery Attempts",
+      "group": "Advanced",
+      "advanced": true,
+      "order": 50,
+      "type": "number",
+      "placeholder": "2",
+      "help": "Maximum bounded retries before the plugin reports gameplay degradation."
     }
   }
 }

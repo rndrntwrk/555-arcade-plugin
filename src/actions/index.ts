@@ -37,20 +37,18 @@ const enableLegacyActionAliases =
   process.env.ARCADE555_ENABLE_LEGACY_ACTION_ALIASES === "true";
 
 export const allActions = [
+  // Connection / session
   healthcheckAction,
   authVerifyAction,
   sessionBootstrapAction,
+  // Games
   gamesCatalogAction,
   gamesPlayAction,
   gamesSwitchAction,
   gamesStopAction,
   gamesGoLivePlayAction,
   gamesLiveCapabilitySprintAction,
-  masteryBriefAction,
-  masteryCertifyAction,
-  masteryStatusAction,
-  masteryValidateAction,
-  masteryEvidenceAction,
+  // Progression
   scoreReadAction,
   scoreSubmitAction,
   leaderboardReadAction,
@@ -58,6 +56,7 @@ export const allActions = [
   questsReadAction,
   questsCreateAction,
   questsCompleteAction,
+  // Advanced operators
   battlesReadAction,
   battlesCreateAction,
   battlesResolveAction,
@@ -70,6 +69,12 @@ export const allActions = [
   adminCabinetPossessAction,
   adminCabinetReleaseAction,
   githubListReposAction,
+  // Alice-only / advanced mastery
+  masteryBriefAction,
+  masteryCertifyAction,
+  masteryStatusAction,
+  masteryValidateAction,
+  masteryEvidenceAction,
   ...(enableLegacyActionAliases ? legacyActionAliases : []),
 ];
 
