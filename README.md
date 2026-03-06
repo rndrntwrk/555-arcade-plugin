@@ -20,7 +20,7 @@ It replaces fragmented `five55-*` arcade control surfaces with one plugin and on
 
 ## Canonical public docs
 
-- [Open docs.milady.ai](https://docs.milady.ai/plugins/555-arcade)
+- [Open docs.rndrntwrk.com](https://docs.rndrntwrk.com/arcade/overview)
 
 ## Repo reference docs
 
