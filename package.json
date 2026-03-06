@@ -65,12 +65,18 @@
     "pluginParameters": {
       "ARCADE555_BASE_URL": {
         "type": "string",
-        "description": "Arcade control-plane base URL",
+        "description": "Public 555 Arcade base URL.",
         "required": false
+      },
+      "ARCADE555_AGENT_API_KEY": {
+        "type": "string",
+        "description": "Preferred arcade agent API key used for token exchange.",
+        "required": false,
+        "sensitive": true
       },
       "ARCADE555_AGENT_TOKEN": {
         "type": "string",
-        "description": "Agent token for arcade API",
+        "description": "Static arcade bearer fallback when API-key token exchange is unavailable.",
         "required": false,
         "sensitive": true
       },
@@ -154,6 +160,9 @@
   ],
   "author": "rndrntwrk",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/rndrntwrk/555-arcade-plugin.git"

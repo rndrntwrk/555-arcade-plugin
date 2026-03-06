@@ -13,8 +13,8 @@
   ],
   "quickstart": {
     "steps": [
-      "Set ARCADE555_BASE_URL and ARCADE555_AGENT_TOKEN (or rely on STREAM555_* fallback).",
-      "Run ARCADE555_HEALTHCHECK and ARCADE555_SESSION_BOOTSTRAP.",
+      "Set ARCADE555_BASE_URL and ARCADE555_AGENT_API_KEY. Use token or STREAM555_* auth fallback only when API-key auth is unavailable.",
+      "Run ARCADE555_HEALTHCHECK, ARCADE555_AUTH_VERIFY, and ARCADE555_SESSION_BOOTSTRAP.",
       "Run ARCADE555_GAMES_CATALOG then ARCADE555_GAMES_PLAY."
     ],
     "docs": [
@@ -29,4 +29,3 @@
     "approvalRequiredByDefault": true
   }
 }
-
