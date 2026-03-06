@@ -161,7 +161,7 @@
   "bugs": {
     "url": "https://github.com/rndrntwrk/555-arcade-plugin/issues"
   },
-  "homepage": "https://github.com/rndrntwrk/555-arcade-plugin#readme",
+  "homepage": "https://docs.milady.ai/plugins/555-arcade",
   "engines": {
     "node": ">=18.0.0"
   },

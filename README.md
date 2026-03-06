@@ -18,7 +18,11 @@ It replaces fragmented `five55-*` arcade control surfaces with one plugin and on
 - send or read progression data
 - combine with `555 Stream` for live gameplay broadcasts
 
-## Public docs
+## Canonical public docs
+
+- [Open docs.milady.ai](https://docs.milady.ai/plugins/555-arcade)
+
+## Repo reference docs
 
 - `docs/PLUGIN_PUBLIC_STANDARD.md`
 - `docs/GET_STARTED.md`
