@@ -1,14 +1,12 @@
-# State Diagrams
+# 555 Arcade — State Diagrams
 
-```mermaid
-stateDiagram-v2
-    [*] --> Unauthenticated
-    Unauthenticated --> AuthReady: ARCADE555_AUTH_VERIFY
-    AuthReady --> SessionBound: ARCADE555_SESSION_BOOTSTRAP
-    SessionBound --> InGame: ARCADE555_GAMES_PLAY
-    InGame --> InGame: ARCADE555_GAMES_SWITCH
-    InGame --> SessionBound: ARCADE555_GAMES_STOP
-    InGame --> Tracking: ARCADE555_SCORE_SUBMIT
-    Tracking --> InGame
-```
+Canonical state documentation now lives here:
 
+- `STATES_AND_TRANSITIONS.md`
+
+Use that file for:
+- plugin lifecycle
+- session and catalog readiness
+- gameplay transitions
+- live gameplay provisioning state
+- progression readiness

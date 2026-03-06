@@ -1,29 +1,38 @@
-# 555 Arcade Plugin — 3-Step Quickstart
+# 555 Arcade — 3-Step Quickstart
 
-## Step 1: Authenticate
+Use this when you need the shortest possible operator runbook.
+
+## Step 1 — Authenticate
 
 Run:
 - `ARCADE555_HEALTHCHECK`
 - `ARCADE555_AUTH_VERIFY`
 
-## Step 2: Bind session
+## Step 2 — Bootstrap session
 
 Run:
 - `ARCADE555_SESSION_BOOTSTRAP`
 
-Use `sessionId` if you want to reuse an existing session.
+Expected:
+- a reusable session is bound
 
-## Step 3: Play and track
+## Step 3 — Play
 
 Run:
 - `ARCADE555_GAMES_CATALOG`
 - `ARCADE555_GAMES_PLAY`
-- optional: `ARCADE555_GAMES_SWITCH`, `ARCADE555_GAMES_STOP`
-- optional: `ARCADE555_SCORE_READ`, `ARCADE555_SCORE_SUBMIT`
-- optional: `ARCADE555_LEADERBOARD_READ`, `ARCADE555_LEADERBOARD_WRITE`
-- optional: `ARCADE555_QUESTS_READ`, `ARCADE555_QUESTS_CREATE`, `ARCADE555_QUESTS_COMPLETE`
-- optional: `ARCADE555_BATTLES_READ`, `ARCADE555_BATTLES_CREATE`, `ARCADE555_BATTLES_RESOLVE`
-- optional: `ARCADE555_REWARDS_PROJECT`, `ARCADE555_REWARDS_ALLOCATE`
-- optional: `ARCADE555_SOCIAL_MONITOR`, `ARCADE555_SOCIAL_ASSIGN_POINTS`
-- optional: `ARCADE555_THEME_SET`, `ARCADE555_EVENT_TRIGGER`, `ARCADE555_CABINET_POSSESS`, `ARCADE555_CABINET_RELEASE`
-- optional: `ARCADE555_GITHUB_LIST_REPOS`
+
+Optional next actions:
+- `ARCADE555_GAMES_SWITCH`
+- `ARCADE555_GAMES_STOP`
+- `ARCADE555_SCORE_READ`
+- `ARCADE555_LEADERBOARD_READ`
+- `ARCADE555_QUESTS_READ`
+
+For live gameplay:
+- `ARCADE555_GAMES_GO_LIVE_PLAY`
+
+## Full docs
+
+- `GET_STARTED.md`
+- `INSTALL_AND_AUTH.md`

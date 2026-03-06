@@ -1,26 +1,70 @@
-# Operator Setup Matrix
+# 555 Arcade — Operator Setup Matrix
 
-## Minimum required
+## Minimum production setup
 
-- API token with game/session scopes
-- `ARCADE555_BASE_URL` or `STREAM555_BASE_URL`
-- `ARCADE555_AGENT_TOKEN` or `STREAM555_AGENT_TOKEN`
+| Key | Required | Preferred value | Notes |
+| --- | --- | --- | --- |
+| `ARCADE555_BASE_URL` | Recommended | `https://555.rndrntwrk.com` | Primary arcade base URL |
+| `ARCADE555_AGENT_API_KEY` | Preferred | `<secret>` | Preferred auth path |
+| `ARCADE555_AGENT_TOKEN` | Fallback | `<secret>` | Static bearer fallback |
+| `ARCADE555_REQUIRE_APPROVALS` | Yes | `true` | Keep enabled in production |
 
-## Recommended
+## Common additions
 
-- `ARCADE555_DEFAULT_SESSION_ID` for stable operator runs
-- `ARCADE555_REQUIRE_APPROVALS=true` in production
-- `ARCADE555_SCORE_CAPTURE_API_URL` when score capture is split from control-plane base
-- `ARCADE555_LEADERBOARD_API_URL` when leaderboard service is split from control-plane base
-- `ARCADE555_QUESTS_API_URL` when quests service is split from control-plane base
-- `ARCADE555_BATTLES_API_URL` + `ARCADE555_BATTLES_CREATE_ENDPOINT` when battle create/read are split
-- `ARCADE555_REWARDS_API_URL` when rewards projection/allocation service is split
-- `ARCADE555_SOCIAL_API_URL` when social scoring service is split
-- `ARCADE555_ADMIN_API_URL` + `ARCADE555_ADMIN_BEARER_TOKEN` when admin controls are split
-- `ARCADE555_GITHUB_TOKEN` when GitHub repo listing is needed by operators
+| Key | When to use |
+| --- | --- |
+| `ARCADE555_DEFAULT_SESSION_ID` | Reuse a stable session |
+| `ARCADE555_GAMES_API_DIALECT` | Choose gameplay transport dialect |
+| `ARCADE555_CF_CONNECT_TIMEOUT_MS` | Tune Cloudflare live gameplay waits |
+| `ARCADE555_CF_CONNECT_POLL_MS` | Tune live-output polling |
+| `ARCADE555_CF_RECOVERY_ATTEMPTS` | Tune bounded recovery attempts |
 
-## Scope recommendations
+## Split-service overrides
 
-- Read-only operators: catalog + state + score read + leaderboard read + quests read + battles read + rewards project + social monitor
-- Live operators: add play/switch/stop + score submit
-- Admin operators: add leaderboard write + quests create/complete + battles create/resolve + rewards allocate + social assign points + theme/event/cabinet admin actions, with approvals enabled
+Only use these when the deployment is actually split:
+- `ARCADE555_SCORE_CAPTURE_API_URL`
+- `ARCADE555_LEADERBOARD_API_URL`
+- `ARCADE555_QUESTS_API_URL`
+- `ARCADE555_BATTLES_API_URL`
+- `ARCADE555_BATTLES_CREATE_ENDPOINT`
+- `ARCADE555_REWARDS_API_URL`
+- `ARCADE555_SOCIAL_API_URL`
+- `ARCADE555_ADMIN_API_URL`
+- `ARCADE555_ADMIN_BEARER_TOKEN`
+- `ARCADE555_GITHUB_TOKEN`
+
+## Recommended profiles
+
+### Public gameplay operator
+
+```env
+ARCADE555_BASE_URL=https://555.rndrntwrk.com
+ARCADE555_AGENT_API_KEY=<agent-api-key>
+ARCADE555_REQUIRE_APPROVALS=true
+```
+
+### Live gameplay operator
+
+```env
+ARCADE555_BASE_URL=https://555.rndrntwrk.com
+ARCADE555_AGENT_API_KEY=<agent-api-key>
+ARCADE555_DEFAULT_SESSION_ID=<session-id>
+ARCADE555_GAMES_API_DIALECT=agent-v1
+ARCADE555_REQUIRE_APPROVALS=true
+```
+
+### Shared stream + arcade operator
+
+```env
+ARCADE555_BASE_URL=https://555.rndrntwrk.com
+STREAM555_AGENT_API_KEY=<shared-agent-api-key>
+ARCADE555_REQUIRE_APPROVALS=true
+```
+
+## Role guidance
+
+- read-only operators: auth, bootstrap, catalog, score read, leaderboard read, quests read
+- live operators: add play/switch/stop and live gameplay
+- admin operators: add leaderboard write, quests create/complete, battles, rewards, social, theme/event/cabinet actions
+
+Mastery actions are intentionally outside the default GA operator role.
