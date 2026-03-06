@@ -2,6 +2,8 @@
 
 Canonical elizaOS/Milaidy plugin for `555 Arcade`.
 
+Status: public preview (`0.1.0-beta.1`).
+
 This package owns the public arcade operator surface for:
 - authentication and session bootstrap
 - game catalog, play, switch, stop, and go-live gameplay
@@ -25,6 +27,8 @@ It replaces fragmented `five55-*` arcade control surfaces with one plugin and on
 ## Repo reference docs
 
 - `docs/PLUGIN_PUBLIC_STANDARD.md`
+- `docs/PUBLISHING.md`
+- `docs/RELEASE_NOTES_0.1.0-beta.1.md`
 - `docs/GET_STARTED.md`
 - `docs/INSTALL_AND_AUTH.md`
 - `docs/ACTIONS_REFERENCE.md`

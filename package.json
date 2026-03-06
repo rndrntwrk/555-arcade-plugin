@@ -1,6 +1,6 @@
 {
   "name": "@rndrntwrk/plugin-555arcade",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "description": "elizaOS plugin for controlling 555 arcade game, quest, leaderboard, and learning operations via Agent API",
   "type": "module",
   "main": "dist/index.js",
@@ -58,6 +58,8 @@
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "release:check": "node ./scripts/release-check.mjs",
+    "release:manifest": "node ./scripts/release-manifest.mjs",
+    "release:preview": "bun run typecheck && bun run release:check && npm_config_cache=/tmp/npm-cache npm pack --dry-run",
     "prepublishOnly": "bun run build"
   },
   "agentConfig": {
