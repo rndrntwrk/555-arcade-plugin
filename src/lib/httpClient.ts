@@ -2,13 +2,15 @@ import type { ApiResponse, HttpClientOptions } from "../types/index.js";
 
 export class HttpClient {
   private readonly baseUrl: string;
-  private readonly token: string;
+  private token: string;
+  private readonly tokenProvider?: () => Promise<string>;
   private readonly timeout: number;
   private readonly maxRetries: number;
 
   constructor(options: HttpClientOptions) {
     this.baseUrl = options.baseUrl.replace(/\/$/, "");
     this.token = options.token;
+    this.tokenProvider = options.tokenProvider;
     this.timeout = options.timeout ?? 20_000;
     this.maxRetries = options.maxRetries ?? 2;
   }
@@ -37,20 +39,21 @@ export class HttpClient {
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${path}`;
     const requestId = uuidv4();
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${this.token}`,
-      "Content-Type": "application/json",
-      "X-Request-Id": requestId,
-    };
-
-    if (options?.idempotencyKey) {
-      headers["Idempotency-Key"] = options.idempotencyKey;
-    }
-
     let lastError: string | undefined;
+    let authRetried = false;
 
     for (let attempt = 0; attempt <= this.maxRetries; attempt += 1) {
       try {
+        const headers: Record<string, string> = {
+          Authorization: `Bearer ${this.token}`,
+          "Content-Type": "application/json",
+          "X-Request-Id": requestId,
+        };
+
+        if (options?.idempotencyKey) {
+          headers["Idempotency-Key"] = options.idempotencyKey;
+        }
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
         const response = await fetch(url, {
@@ -66,6 +69,13 @@ export class HttpClient {
           | { error?: string; requestId?: string };
 
         if (!response.ok) {
+          if (response.status === 401 && this.tokenProvider && !authRetried) {
+            authRetried = true;
+            await this.refreshToken();
+            attempt -= 1;
+            continue;
+          }
+
           if (response.status >= 400 && response.status < 500) {
             return {
               success: false,
@@ -98,6 +108,17 @@ export class HttpClient {
       requestId,
     };
   }
+
+  private async refreshToken(): Promise<void> {
+    if (!this.tokenProvider) {
+      return;
+    }
+    const nextToken = (await this.tokenProvider()).trim();
+    if (!nextToken) {
+      throw new Error("Agent token refresh returned an empty token");
+    }
+    this.token = nextToken;
+  }
 }
 
 function sleep(ms: number): Promise<void> {
@@ -111,4 +132,3 @@ function uuidv4(): string {
     return value.toString(16);
   });
 }
-

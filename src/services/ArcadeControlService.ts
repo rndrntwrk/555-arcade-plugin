@@ -156,10 +156,16 @@ export class ArcadeControlService implements Service {
       10,
     );
     const maxRetries = Number.parseInt(process.env.ARCADE555_RETRY_MAX || "2", 10);
+    const agentTokenProvider = () => resolveAgentBearer(this.config?.baseUrl ?? baseUrl);
+    const adminTokenProvider =
+      resolvedAdminBearerToken === agentToken
+        ? agentTokenProvider
+        : undefined;
 
     this.httpClient = new HttpClient({
       baseUrl,
       token: agentToken,
+      tokenProvider: agentTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
@@ -167,6 +173,7 @@ export class ArcadeControlService implements Service {
     this.scoreCaptureClient = new HttpClient({
       baseUrl: resolvedScoreCaptureBaseUrl,
       token: agentToken,
+      tokenProvider: agentTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
@@ -174,6 +181,7 @@ export class ArcadeControlService implements Service {
     this.leaderboardClient = new HttpClient({
       baseUrl: resolvedLeaderboardBaseUrl,
       token: agentToken,
+      tokenProvider: agentTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
@@ -181,6 +189,7 @@ export class ArcadeControlService implements Service {
     this.questsClient = new HttpClient({
       baseUrl: resolvedQuestsBaseUrl,
       token: agentToken,
+      tokenProvider: agentTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
@@ -188,6 +197,7 @@ export class ArcadeControlService implements Service {
     this.battlesClient = new HttpClient({
       baseUrl: resolvedBattlesBaseUrl,
       token: agentToken,
+      tokenProvider: agentTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
@@ -195,6 +205,7 @@ export class ArcadeControlService implements Service {
     this.rewardsClient = new HttpClient({
       baseUrl: resolvedRewardsBaseUrl,
       token: agentToken,
+      tokenProvider: agentTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
@@ -202,6 +213,7 @@ export class ArcadeControlService implements Service {
     this.socialClient = new HttpClient({
       baseUrl: resolvedSocialBaseUrl,
       token: agentToken,
+      tokenProvider: agentTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
@@ -209,6 +221,7 @@ export class ArcadeControlService implements Service {
     this.adminClient = new HttpClient({
       baseUrl: resolvedAdminBaseUrl,
       token: resolvedAdminBearerToken,
+      tokenProvider: adminTokenProvider,
       timeout: requestTimeoutMs,
       maxRetries,
     });
