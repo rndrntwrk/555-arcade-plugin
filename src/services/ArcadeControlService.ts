@@ -417,22 +417,39 @@ export class ArcadeControlService implements Service {
     sessionId: string | undefined,
     payload: ScoreSubmitRequest,
   ): Promise<Record<string, unknown>> {
-    const id = this.requireSessionId(sessionId);
+    const id = this.requireSessionId(sessionId ?? payload.sessionId);
     const runId = payload.runId || generateRunId();
+    const metadata = {
+      ...(payload.metadata || {}),
+      run_id: runId,
+      session_id: id,
+      authority: (payload.metadata?.authority as string | undefined) ?? "milaidy",
+      score_source: (payload.metadata?.score_source as string | undefined) ?? "arcade_plugin",
+      origin: (payload.metadata?.origin as string | undefined) ?? "arcade-plugin",
+      mode: (payload.metadata?.mode as string | undefined) ?? "agent",
+    };
     const response = await this.client.post<Record<string, unknown>>(
-      `/api/agent/v1/sessions/${id}/games/${encodeURIComponent(payload.gameId)}/telemetry`,
+      `/game/${encodeURIComponent(payload.gameId)}/record`,
       {
-        runId,
         score: payload.score,
-        recordedAt: new Date().toISOString(),
-        metadata: payload.metadata || {},
+        runId,
+        sessionId: id,
+        authority: metadata.authority,
+        mode: metadata.mode,
+        source: "arcade-plugin",
+        meta: metadata,
       },
       {
         idempotencyKey: `${id}:${payload.gameId}:${runId}`,
+        headers: {
+          Accept: "application/json",
+          "X-Score-Surface": "agent_arcade_plugin",
+          "X-Score-Access-Point": "milaidy_chat",
+        },
       },
     );
     if (!response.success || !response.data) {
-      throw new Error(response.error || "failed to submit score telemetry");
+      throw new Error(response.error || "failed to submit ranked score");
     }
     return response.data;
   }
@@ -815,7 +832,6 @@ export class ArcadeControlService implements Service {
       scoreRead: true,
       scoreSubmit: true,
       leaderboardRead: true,
-      leaderboardWrite: true,
       questsRead: true,
       questsCreate: true,
       questsComplete: true,

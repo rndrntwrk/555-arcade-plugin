@@ -32,11 +32,10 @@ Preferred behavior:
 1. `ARCADE555_SCORE_READ`
 2. `ARCADE555_SCORE_SUBMIT`
 3. `ARCADE555_LEADERBOARD_READ`
-4. optional `ARCADE555_LEADERBOARD_WRITE` for admin/operator workflows
 
 Rules:
 - treat score submission as replay-safe and run-aware
-- do not overwrite leaderboard state casually in public operator flows
+- do not mutate leaderboard state from the public plugin surface; ranked writes must flow through canonical score submission
 
 ## 4. Quest lifecycle
 

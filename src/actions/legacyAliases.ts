@@ -15,7 +15,6 @@ import { gamesSwitchAction } from "./gamesSwitch.js";
 import { buildLegacyAliasEnvelope } from "./gamesAgentRuntime.js";
 import { githubListReposAction } from "./githubListRepos.js";
 import { leaderboardReadAction } from "./leaderboardRead.js";
-import { leaderboardWriteAction } from "./leaderboardWrite.js";
 import { masteryBriefAction } from "./masteryBrief.js";
 import { masteryCertifyAction } from "./masteryCertify.js";
 import { masteryEvidenceAction } from "./masteryEvidence.js";
@@ -157,12 +156,6 @@ export const legacyActionAliases: Action[] = [
     leaderboardReadAction,
     "Compatibility alias for ARCADE555_LEADERBOARD_READ.",
     ["READ_LEADERBOARD", "GET_LEADERBOARD"],
-  ),
-  createActionAlias(
-    "FIVE55_LEADERBOARD_WRITE",
-    leaderboardWriteAction,
-    "Compatibility alias for ARCADE555_LEADERBOARD_WRITE.",
-    ["WRITE_LEADERBOARD", "UPDATE_LEADERBOARD"],
   ),
   createActionAlias(
     "FIVE55_QUESTS_READ",

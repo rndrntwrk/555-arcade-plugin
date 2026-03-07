@@ -86,6 +86,11 @@ export interface HttpClientOptions {
   maxRetries?: number;
 }
 
+export interface HttpRequestOptions {
+  idempotencyKey?: string;
+  headers?: Record<string, string>;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -163,6 +168,7 @@ export interface ScoreSubmitRequest {
   gameId: string;
   score: number;
   runId?: string;
+  sessionId?: string;
   metadata?: Record<string, unknown>;
 }
 

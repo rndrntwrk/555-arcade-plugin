@@ -16,7 +16,6 @@ import { githubListReposAction } from "./githubListRepos.js";
 import { healthcheckAction } from "./healthcheck.js";
 import { legacyActionAliases } from "./legacyAliases.js";
 import { leaderboardReadAction } from "./leaderboardRead.js";
-import { leaderboardWriteAction } from "./leaderboardWrite.js";
 import { masteryBriefAction } from "./masteryBrief.js";
 import { masteryCertifyAction } from "./masteryCertify.js";
 import { masteryEvidenceAction } from "./masteryEvidence.js";
@@ -52,7 +51,6 @@ export const allActions = [
   scoreReadAction,
   scoreSubmitAction,
   leaderboardReadAction,
-  leaderboardWriteAction,
   questsReadAction,
   questsCreateAction,
   questsCompleteAction,
@@ -96,7 +94,6 @@ export {
   scoreReadAction,
   scoreSubmitAction,
   leaderboardReadAction,
-  leaderboardWriteAction,
   questsReadAction,
   questsCreateAction,
   questsCompleteAction,

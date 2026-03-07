@@ -65,6 +65,6 @@ ARCADE555_REQUIRE_APPROVALS=true
 
 - read-only operators: auth, bootstrap, catalog, score read, leaderboard read, quests read
 - live operators: add play/switch/stop and live gameplay
-- admin operators: add leaderboard write, quests create/complete, battles, rewards, social, theme/event/cabinet actions
+- admin operators: add quests create/complete, battles, rewards, social, theme/event/cabinet actions
 
 Mastery actions are intentionally outside the default GA operator role.

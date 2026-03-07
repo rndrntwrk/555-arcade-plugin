@@ -1,4 +1,4 @@
-import type { ApiResponse, HttpClientOptions } from "../types/index.js";
+import type { ApiResponse, HttpClientOptions, HttpRequestOptions } from "../types/index.js";
 
 export class HttpClient {
   private readonly baseUrl: string;
@@ -22,7 +22,7 @@ export class HttpClient {
   async post<T>(
     path: string,
     body?: unknown,
-    options?: { idempotencyKey?: string },
+    options?: HttpRequestOptions,
   ): Promise<ApiResponse<T>> {
     return this.request<T>("POST", path, body, options);
   }
@@ -35,7 +35,7 @@ export class HttpClient {
     method: string,
     path: string,
     body?: unknown,
-    options?: { idempotencyKey?: string },
+    options?: HttpRequestOptions,
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${path}`;
     const requestId = uuidv4();
@@ -52,6 +52,9 @@ export class HttpClient {
 
         if (options?.idempotencyKey) {
           headers["Idempotency-Key"] = options.idempotencyKey;
+        }
+        if (options?.headers) {
+          Object.assign(headers, options.headers);
         }
 
         const controller = new AbortController();

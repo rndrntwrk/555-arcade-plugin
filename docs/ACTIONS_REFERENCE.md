@@ -34,7 +34,6 @@ This is the canonical public action list for `@rndrntwrk/plugin-555arcade`.
 | `ARCADE555_SCORE_READ` | Progress | Read current or recent score state | `gameId`, `sessionId`, `runId` | Yes |
 | `ARCADE555_SCORE_SUBMIT` | Progress | Submit score/outcome data | score payload | Yes |
 | `ARCADE555_LEADERBOARD_READ` | Progress | Read leaderboard state | `gameId`, ranking options | Yes |
-| `ARCADE555_LEADERBOARD_WRITE` | Progress | Write/update leaderboard entries | leaderboard payload | Advanced |
 | `ARCADE555_QUESTS_READ` | Progress | Read active or completed quests | filters | Yes |
 | `ARCADE555_QUESTS_CREATE` | Progress | Create a quest | quest payload | Advanced |
 | `ARCADE555_QUESTS_COMPLETE` | Progress | Complete or mark quest state | quest id/payload | Advanced |
@@ -74,3 +73,5 @@ Legacy `FIVE55_*` aliases are available only when:
 - `ARCADE555_ENABLE_LEGACY_ACTION_ALIASES=true`
 
 Public docs should not depend on those aliases.
+
+Direct leaderboard mutation is not part of the public plugin surface. Ranked public entries must flow through canonical score submission on `POST /game/{id}/record`.

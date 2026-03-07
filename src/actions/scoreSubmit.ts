@@ -10,7 +10,7 @@ import { extractNumberOption, extractTextOption, getArcadeService } from "./shar
 
 export const scoreSubmitAction: Action = {
   name: "ARCADE555_SCORE_SUBMIT",
-  description: "Submit score telemetry for the active game session.",
+  description: "Submit a ranked score through the canonical 555 backend game record route.",
   similes: ["ARCADE_SUBMIT_SCORE", "REPORT_ARCADE_SCORE", "LEADERBOARD_SCORE_SUBMIT"],
   validate: async (runtime: IAgentRuntime): Promise<boolean> => {
     return Boolean(getArcadeService(runtime));
@@ -44,7 +44,7 @@ export const scoreSubmitAction: Action = {
     try {
       const result = await service.submitScore(sessionId, { gameId, score, runId });
       callback?.({
-        text: `Score submitted for ${gameId}: ${score}`,
+        text: `Ranked score submitted for ${gameId}: ${score}`,
         content: { success: true, data: result },
       });
       return true;
@@ -64,11 +64,10 @@ export const scoreSubmitAction: Action = {
       },
       {
         user: "{{agentName}}",
-        content: { text: "Submitting knighthood score telemetry.", action: "ARCADE555_SCORE_SUBMIT" },
+        content: { text: "Submitting knighthood ranked score through the canonical 555 record route.", action: "ARCADE555_SCORE_SUBMIT" },
       },
     ],
   ] as ActionExample[][],
 };
 
 export default scoreSubmitAction;
-
