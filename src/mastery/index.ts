@@ -35,9 +35,13 @@ export {
 } from "./store.js";
 
 export { getMasteryCertificationOrchestrator } from "./certification.js";
+export { readArcade555ActiveSessions } from "./activity.js";
+export { validateArcade555GameTelemetryV2 } from "./telemetry.js";
 
 export type {
   Five55MasteryContract,
+  MasteryAtomicAudit,
+  MasteryAtomicAuditStatus,
   Five55MasteryEpisode,
   Five55MasteryGameSnapshot,
   Five55MasteryLog,
@@ -63,6 +67,7 @@ export type {
 } from "./types.js";
 
 export type Arcade555MasteryContract = import("./types.js").Five55MasteryContract;
+export type Arcade555MasteryAtomicAudit = import("./types.js").MasteryAtomicAudit;
 export type Arcade555MasteryEpisode = import("./types.js").Five55MasteryEpisode;
 export type Arcade555MasteryGameSnapshot = import("./types.js").Five55MasteryGameSnapshot;
 export type Arcade555MasteryLog = import("./types.js").Five55MasteryLog;
@@ -71,3 +76,8 @@ export type Arcade555MasteryRunsPage = import("./types.js").Five55MasteryRunsPag
 export type Arcade555MasteryVerdict = import("./types.js").MasteryVerdict;
 export type Arcade555MasteryEvidenceFrame = import("./types.js").MasteryEvidenceFrame;
 export type Arcade555MasteryConsistencyVerdict = import("./types.js").MasteryConsistencyVerdict;
+export type Arcade555MasteryProgress = import("./types.js").Arcade555MasteryProgress;
+export type Arcade555GameTelemetryV2 = import("./types.js").Arcade555GameTelemetryV2;
+export type Arcade555ActiveSession = import("./types.js").Arcade555ActiveSession;
+export type Arcade555TelemetryValidationIssue = import("./types.js").Arcade555TelemetryValidationIssue;
+export type Arcade555TelemetryValidationResult = import("./types.js").Arcade555TelemetryValidationResult;

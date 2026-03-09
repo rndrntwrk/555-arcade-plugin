@@ -195,6 +195,82 @@ export interface MasteryPolicyProfile {
   bounds: Record<string, MasteryPolicyBounds>;
 }
 
+export type MasteryAtomicAuditStatus =
+  | "pending"
+  | "in_progress"
+  | "audited"
+  | "closed"
+  | "regression-only"
+  | "deferred";
+
+export interface MasteryAtomicAuditControl {
+  action: string;
+  binding: string;
+  source: string;
+  semantics: string;
+}
+
+export interface MasteryAtomicAuditLifecycleNode {
+  state: MasteryLifecycleState | string;
+  enterSignals: string[];
+  exitSignals: string[];
+  notes?: string;
+}
+
+export interface MasteryAtomicAuditObjectiveModel {
+  primaryObjective: string;
+  winSignals: string[];
+  failSignals: string[];
+  currentFailureReason: string;
+}
+
+export interface MasteryAtomicAuditTopology {
+  structure: string;
+  stages: string[];
+  completionMetric: string;
+  notes?: string[];
+}
+
+export type MasteryAtomicAuditMetricCoverage =
+  | "native"
+  | "controller"
+  | "hybrid"
+  | "missing";
+
+export interface MasteryAtomicAuditMetricSource {
+  metric: string;
+  coverage: MasteryAtomicAuditMetricCoverage;
+  location: string;
+  notes?: string;
+}
+
+export interface MasteryAtomicAuditControllerDesign {
+  mode: string;
+  substates: string[];
+  currentBlockingSubsystem: string;
+  controllerFailureMode: string;
+  telemetryAdditions: string[];
+  boundedGate: string;
+}
+
+export interface MasteryAtomicAuditSmokeAssertion {
+  id: string;
+  description: string;
+  successMetric: string;
+  currentFailure: string;
+}
+
+export interface MasteryAtomicAudit {
+  auditStatus: MasteryAtomicAuditStatus;
+  controls: MasteryAtomicAuditControl[];
+  lifecycleMap: MasteryAtomicAuditLifecycleNode[];
+  objectiveModel: MasteryAtomicAuditObjectiveModel;
+  levelTopology: MasteryAtomicAuditTopology;
+  metricSourceMap: MasteryAtomicAuditMetricSource[];
+  controllerDesign: MasteryAtomicAuditControllerDesign;
+  smokeAssertions: MasteryAtomicAuditSmokeAssertion[];
+}
+
 export interface Five55MasteryContract {
   gameId: string;
   aliases: string[];
@@ -208,6 +284,7 @@ export interface Five55MasteryContract {
   gateV2: MasteryGateV2;
   recovery: MasteryRecoveryPolicy;
   policy: MasteryPolicyProfile;
+  atomicAudit: MasteryAtomicAudit;
   notes?: string[];
 }
 
@@ -305,6 +382,65 @@ export interface Five55MasteryRunsPage {
   cursor: string | null;
   nextCursor: string | null;
   total: number;
+}
+
+export interface Arcade555MasteryProgress {
+  totalEpisodes: number;
+  completedEpisodes: number;
+  passedEpisodes: number;
+  failedEpisodes: number;
+  completionRate: number;
+  passRate: number;
+}
+
+export interface Arcade555GameTelemetryV2 {
+  gameId: string | null;
+  runId: string | null;
+  episodeId: string | null;
+  ts: string;
+  lifecycle: MasteryLifecycleState;
+  nativeMetrics: JsonRecord;
+  objectiveProgress: JsonRecord;
+  failReason: string | null;
+  controlCoverage: JsonRecord;
+  visualHash: string | null;
+  provenance: JsonRecord;
+}
+
+export interface Arcade555TelemetryValidationIssue {
+  path: string;
+  code: string;
+  message: string;
+}
+
+export interface Arcade555TelemetryValidationResult {
+  valid: boolean;
+  telemetry: Arcade555GameTelemetryV2;
+  issues: Arcade555TelemetryValidationIssue[];
+}
+
+export interface Arcade555ActiveSession {
+  sessionId: string;
+  runId: string;
+  gameId: string | null;
+  gameTitle: string | null;
+  generatedAt: string;
+  startedAt: string;
+  updatedAt: string;
+  status: MasteryRunStatus | MasteryEpisodeStatus | "idle";
+  objective: string | null;
+  phase: string | null;
+  currentAction: string | null;
+  confidence: number | null;
+  blocker: string | null;
+  progress: Arcade555MasteryProgress;
+  frameCount: number;
+  evidenceLinks: Array<{
+    label: string;
+    href: string;
+    kind?: "api" | "artifact" | "ui";
+  }>;
+  metadata?: JsonRecord;
 }
 
 export interface MasteryCertificationRequest {
