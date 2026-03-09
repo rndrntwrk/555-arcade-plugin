@@ -68,6 +68,6 @@
 
 - Effective branch remains `main`; no new controller closures were mixed into this handoff batch.
 - Review branch created locally: `codex/pr-atomic-mastery-handoff-arcade-plugin-20260308`
-- Push status at memo creation: pending
+- Push status: pushed to `origin/codex/pr-atomic-mastery-handoff-arcade-plugin-20260308`
 - PR target: `origin/main`
-- PR creation status at memo creation: pending
+- PR creation status: open at `https://github.com/rndrntwrk/555-arcade-plugin/pull/1`
