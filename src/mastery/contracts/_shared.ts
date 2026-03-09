@@ -1,5 +1,6 @@
 import type { JsonRecord } from "../../intelligence/types.js";
 import type {
+  MasteryAtomicAudit,
   Five55MasteryContract,
   MasteryEvidenceProvenance,
   MasteryGateV2,
@@ -39,12 +40,16 @@ export const BASE_POLICY_BOUNDS: Record<string, MasteryPolicyBounds> = Object.fr
 });
 
 export function createMasteryContract(
-  contract: Omit<Five55MasteryContract, "policy" | "contractVersion" | "gateV2"> & {
+  contract: Omit<
+    Five55MasteryContract,
+    "policy" | "contractVersion" | "gateV2" | "atomicAudit"
+  > & {
     policy?: {
       family?: string;
       defaults?: JsonRecord;
       bounds?: Record<string, MasteryPolicyBounds>;
     };
+    atomicAudit?: Partial<MasteryAtomicAudit>;
     gateV2?: Partial<MasteryGateV2>;
   },
 ): Five55MasteryContract {
@@ -64,9 +69,39 @@ export function createMasteryContract(
           : ("runtime-native" as const),
     }),
   );
+  const atomicAudit: MasteryAtomicAudit = {
+    auditStatus: contract.atomicAudit?.auditStatus ?? "pending",
+    controls: contract.atomicAudit?.controls ?? [],
+    lifecycleMap: contract.atomicAudit?.lifecycleMap ?? [],
+    objectiveModel: contract.atomicAudit?.objectiveModel ?? {
+      primaryObjective: contract.objective.summary,
+      winSignals: [contract.objective.winCondition],
+      failSignals: [],
+      currentFailureReason:
+        "Atomic audit has not yet been completed against 555-mono source.",
+    },
+    levelTopology: contract.atomicAudit?.levelTopology ?? {
+      structure: "Atomic audit pending.",
+      stages: [],
+      completionMetric: "unmapped",
+      notes: [],
+    },
+    metricSourceMap: contract.atomicAudit?.metricSourceMap ?? [],
+    controllerDesign: contract.atomicAudit?.controllerDesign ?? {
+      mode: "pre-audit",
+      substates: [],
+      currentBlockingSubsystem: "atomic-audit-pending",
+      controllerFailureMode:
+        "No source-truth controller design recorded yet.",
+      telemetryAdditions: [],
+      boundedGate: "Atomic audit pending.",
+    },
+    smokeAssertions: contract.atomicAudit?.smokeAssertions ?? [],
+  };
   return {
     ...contract,
     contractVersion: 2,
+    atomicAudit,
     gateV2: {
       runtimeGates,
       levelRequirement: contract.gateV2?.levelRequirement ?? null,
