@@ -24,10 +24,14 @@ authored dossier set.
 | Where We're Going We Do Need Roads | `../src/mastery/dossiers/where-were-going-we-do-need-roads.md` |
 | Wolf and Sheep | `../src/mastery/dossiers/wolf-and-sheep.md` |
 
-## Missing public-catalog mastery coverage
+## Public-catalog gap decisions
 
-These public-catalog games do not yet have a dedicated mastery dossier in this
-repo and should remain explicitly open until they do:
+The remaining public-catalog gaps are now tracked in
+`MASTERY_EXCLUSION_DECISIONS.md`.
+
+The catalog can only claim full mastery coverage once each of these games has
+either a dedicated dossier or an explicit decision that keeps it out of the
+mastery-claim set:
 
 - 555 Lottery
 - Flock
