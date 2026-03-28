@@ -96,6 +96,8 @@ If the stream is also live through `555 Stream`, stop the stream from that plugi
 
 ## Next docs
 
+- `PROGRAM_INDEX.md`
 - `INSTALL_AND_AUTH.md`
 - `ACTIONS_REFERENCE.md`
 - `EDGE_CASES_AND_RECOVERY.md`
+- `MASTERY_INDEX.md`
