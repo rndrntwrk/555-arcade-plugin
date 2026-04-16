@@ -4,6 +4,16 @@ Canonical elizaOS/Milaidy plugin for `555 Arcade`.
 
 Status: public preview (`0.1.0-beta.1`).
 
+## Deployment structure
+
+Verified on 2026-04-14.
+
+This repo is a plugin/package release surface, not a hosted app deployment. No Vercel, Railway, Render, or Cloudflare app-host config was found at this project root during the audit.
+
+Operationally, "deploying" this project means publishing or installing the package and validating the arcade operator actions against the live 555 Arcade/API surfaces. Use `docs/PUBLISHING.md`, `docs/PUBLIC_RELEASE_CHECKLIST.md`, and the docs listed below for release readiness.
+
+The local-only 555stream runbook at `555/internal-ops-docs/deploy/DEPLOY_GIT_AUTH_RUNBOOK.md` does not operate this package. It is only relevant as cross-project context for self-managed 555stream host Git-auth recovery.
+
 This package owns the public arcade operator surface for:
 - authentication and session bootstrap
 - game catalog, play, switch, stop, and go-live gameplay
