@@ -144,4 +144,19 @@ describe("gameplay core canonical contracts", () => {
     const controls = { steer: 1 }; const mismatch = { ...observation, appliedControls: controls, appliedDecision: { leaseId: "l", fence: 7, ownerType: "agent", directiveId: "d", decisionId: "x", semanticIntentDigest: "1".repeat(64), mappedControlsDigest: "2".repeat(64), appliedControlsDigest: "3".repeat(64) } };
     assert.throws(() => validateObservation(mismatch));
   });
+
+  it("binds progress verdicts to one ordered authority window and verified contributing decisions", () => {
+    const controls = { accelerate: 1, brake: 0, steer: 0 };
+    const decision = (decisionId: string) => ({ leaseId: "lease-1", fence: 7, ownerType: "agent" as const, directiveId: "directive-1", decisionId, semanticIntentDigest: "1".repeat(64), mappedControlsDigest: "2".repeat(64), appliedControlsDigest: sha256Canonical(controls) });
+    const previous = { ...observation, sequence: 10, sourceObservationSequence: 10, sourceObservationDigest: "3".repeat(64), observedAtAuthorityMs: 1000, appliedControls: controls, appliedDecision: decision("decision-1") };
+    const middle = { ...observation, sequence: 11, sourceObservationSequence: 11, sourceObservationDigest: "4".repeat(64), observedAtAuthorityMs: 1100, appliedControls: controls, appliedDecision: decision("decision-2") };
+    const current = { ...observation, sequence: 12, sourceObservationSequence: 12, sourceObservationDigest: "5".repeat(64), observedAtAuthorityMs: 1200, appliedControls: controls, appliedDecision: decision("decision-2") };
+    const base = { gameRunId: current.gameRunId, sourceId: current.sourceId, fence: current.fence, controlOwnerType: current.controlOwnerType, evidenceWindowContextDigest: current.evidenceWindowContextDigest, progressSchemaVersion: "555drive.progress.v1", fromSourceObservationSequence: previous.sourceObservationSequence, toSourceObservationSequence: current.sourceObservationSequence, fromSourceObservationDigest: previous.sourceObservationDigest, toSourceObservationDigest: current.sourceObservationDigest, evaluatedAtAuthorityMs: current.observedAtAuthorityMs, progressed: true, metrics: { distance: 100 }, contributingDecisionIds: ["decision-1", "decision-2"] };
+    const stable = { gameRunId: base.gameRunId, sourceId: base.sourceId, fence: base.fence, controlOwnerType: base.controlOwnerType, evidenceWindowContextDigest: base.evidenceWindowContextDigest, progressSchemaVersion: base.progressSchemaVersion, fromSourceObservationSequence: base.fromSourceObservationSequence, toSourceObservationSequence: base.toSourceObservationSequence, fromSourceObservationDigest: base.fromSourceObservationDigest, toSourceObservationDigest: base.toSourceObservationDigest };
+    const unsigned = { ...base, verdictId: sha256Canonical(stable) }; const verdict = { ...unsigned, verdictDigest: sha256Canonical(unsigned) };
+    assert.deepEqual(validateProgressVerdict(verdict, previous, current, [previous, middle, current]), verdict);
+    for (const invalidPrevious of [{ ...previous, gameRunId: "other-run" }, { ...previous, sourceId: "other-source" }, { ...previous, fence: 8 }, { ...previous, sequence: 13, sourceObservationSequence: 13 }, { ...previous, observedAtAuthorityMs: 1300 }]) assert.throws(() => validateProgressVerdict(verdict, invalidPrevious, current, [invalidPrevious, middle, current]));
+    const inventedUnsigned = { ...unsigned, contributingDecisionIds: ["invented-decision"] }; const invented = { ...inventedUnsigned, verdictDigest: sha256Canonical(inventedUnsigned) };
+    assert.throws(() => validateProgressVerdict(invented, previous, current, [previous, middle, current]));
+  });
 });
