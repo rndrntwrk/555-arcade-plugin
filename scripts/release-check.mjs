@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 const requiredFiles = [
   "CHANGELOG.md",
@@ -38,6 +39,7 @@ if (pkg.publishConfig?.access !== "public") {
 
 const requiredExports = [
   ".",
+  "./gameplay-core",
   "./mastery",
   "./intelligence",
   "./types",
@@ -51,6 +53,45 @@ const exportedKeys = pkg.exports ? Object.keys(pkg.exports) : [];
 const missingExports = requiredExports.filter((entry) => !exportedKeys.includes(entry));
 if (missingExports.length > 0) {
   console.error(`[release-check] missing package exports: ${missingExports.join(", ")}`);
+  process.exit(1);
+}
+
+const gameplayCore = pkg.exports?.["./gameplay-core"];
+if (gameplayCore?.import !== "./dist/gameplay-core/index.js" || gameplayCore?.types !== "./dist/gameplay-core/index.d.ts") {
+  console.error("[release-check] gameplay-core export must point to compiled JS and declarations");
+  process.exit(1);
+}
+for (const file of ["dist/gameplay-core/index.js", "dist/gameplay-core/index.d.ts"]) {
+  if (!existsSync(file)) {
+    console.error(`[release-check] missing compiled gameplay-core file: ${file}`);
+    process.exit(1);
+  }
+}
+const verifyPureGameplayGraph = (entrypoint, extension) => {
+  const visited = new Set();
+  const visit = (file) => {
+    if (visited.has(file)) return;
+    visited.add(file);
+    const source = readFileSync(file, "utf8");
+    if (/(?:from\s*|import\s*)["'][^"']*(?:@elizaos\/core|\.\.\/index|milaidy|555stream)["']|process\.env|createArcade555Plugin/.test(source)) throw new Error(`impure gameplay-core dependency in ${file}`);
+    for (const match of source.matchAll(/(?:import|export)\s+(?:type\s+)?(?:[^'";]+?\s+from\s+)?["'](\.[^"']+)["']/g)) {
+      const imported = resolve(dirname(file), match[1].replace(/\.js$/, extension));
+      if (!existsSync(imported)) throw new Error(`missing gameplay-core dependency ${imported}`);
+      visit(imported);
+    }
+  };
+  visit(entrypoint);
+};
+try {
+  verifyPureGameplayGraph("src/gameplay-core/index.ts", ".ts");
+  verifyPureGameplayGraph("dist/gameplay-core/index.js", ".js");
+  verifyPureGameplayGraph("dist/gameplay-core/index.d.ts", ".d.ts");
+} catch (error) {
+  console.error(`[release-check] gameplay-core public graph is not pure: ${(error).message}`);
+  process.exit(1);
+}
+if (pkg.peerDependenciesMeta?.["@elizaos/core"]?.optional !== true) {
+  console.error("[release-check] @elizaos/core must be an optional peer for pure gameplay-core consumers");
   process.exit(1);
 }
 

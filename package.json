@@ -22,6 +22,10 @@
       "import": "./dist/types/index.js",
       "types": "./dist/types/index.d.ts"
     },
+    "./gameplay-core": {
+      "import": "./dist/gameplay-core/index.js",
+      "types": "./dist/gameplay-core/index.d.ts"
+    },
     "./milaidy": {
       "import": "./dist/milaidy/factory.js",
       "types": "./dist/milaidy/factory.d.ts"
@@ -58,6 +62,8 @@
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "release:check": "node ./scripts/release-check.mjs",
+    "test:gameplay-core": "bun test src/gameplay-core",
+    "test": "bun run test:gameplay-core",
     "release:manifest": "node ./scripts/release-manifest.mjs",
     "release:preview": "bun run typecheck && bun run release:check && npm_config_cache=/tmp/npm-cache npm pack --dry-run",
     "prepublishOnly": "bun run build"
@@ -178,6 +184,11 @@
   },
   "peerDependencies": {
     "@elizaos/core": "^1.7.0"
+  },
+  "peerDependenciesMeta": {
+    "@elizaos/core": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@elizaos/core": "^1.7.0",

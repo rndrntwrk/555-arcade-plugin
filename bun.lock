@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "@rndrntwrk/plugin-555arcade",
@@ -11,6 +12,9 @@
       "peerDependencies": {
         "@elizaos/core": "^1.7.0",
       },
+      "optionalPeers": [
+        "@elizaos/core",
+      ],
     },
   },
   "packages": {
