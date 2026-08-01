@@ -48,4 +48,10 @@ describe("racing line controller", () => {
     assert.notDeepEqual(command(decide({ recenterBias: 0 }), "steer"), command(decide({ recenterBias: 1 }), "steer"));
     assert.notDeepEqual(command(decide({ hazardAvoidanceBias: 0 }), "steer"), command(decide({ hazardAvoidanceBias: 1 }), "steer"));
   });
+
+  it("uses hazardAvoidanceBias to change centered ahead-hazard clearance eligibility", () => {
+    const centeredAhead = raw(0, [{ id: "track:2:4", relativeX: 0, relativeZ: 50, relativeVelocityZ: 0 }]);
+    assert.deepEqual(command(decide({ hazardAvoidanceBias: 0 }, centeredAhead), "brake"), { kind: "analog", controlId: "brake", value: 0 });
+    assert.deepEqual(command(decide({ hazardAvoidanceBias: 1 }, centeredAhead), "brake"), { kind: "analog", controlId: "brake", value: .75 });
+  });
 });

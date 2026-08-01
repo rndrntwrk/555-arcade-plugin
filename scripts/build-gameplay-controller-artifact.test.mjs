@@ -47,3 +47,9 @@ test("normal clean build replaces stale output with one stable package-loadable 
   assert.equal(result.exitCode, 0, Buffer.from(result.stderr).toString());
   assert.equal(await readFile(artifact, "utf8"), first);
 });
+
+test("post-build public gameplay-core fixture type-checks adapter/controller types through the package subpath", () => {
+  const fixture = resolve("scripts/fixtures/gameplay-core-public-api.fixture.ts");
+  const result = Bun.spawnSync(["./node_modules/.bin/tsc", "--noEmit", "--strict", "--target", "ES2022", "--module", "NodeNext", "--moduleResolution", "NodeNext", "--skipLibCheck", fixture]);
+  assert.equal(result.exitCode, 0, Buffer.from(result.stderr).toString());
+});

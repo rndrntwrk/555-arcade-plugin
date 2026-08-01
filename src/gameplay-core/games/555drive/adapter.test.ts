@@ -84,6 +84,16 @@ describe("555Drive adapter", () => {
     assert.equal(drive555Adapter.deriveEventDrafts(before, collided).some((draft) => draft.type === "hazard.avoided"), false);
   });
 
+  it("rejects arbitrary raw hazard IDs and never credits an unbounded vehicle crossing as avoidance", () => {
+    const invalid = rawSample(1, 100, { hazards: [{ id: "vehicle:unbounded", relativeX: 0, relativeZ: 1, relativeVelocityZ: 0 }] });
+    assert.throws(() => drive555Adapter.normalizeObservation(invalid, binding, runtime, evidence));
+    const before = observe(1, 100, { hazards: [{ id: "track:2:4", relativeX: 0, relativeZ: 1, relativeVelocityZ: 0 }] });
+    const after = observe(2, 200, { hazards: [{ id: "track:2:4", relativeX: 0, relativeZ: -1, relativeVelocityZ: 0 }] });
+    const forgedBefore = { ...before, gameState: { ...before.gameState, hazards: [{ ...before.gameState.hazards[0], id: "vehicle:unbounded" }] }, entities: [{ ...before.entities![0], id: "vehicle:unbounded" }] };
+    const forgedAfter = { ...after, gameState: { ...after.gameState, hazards: [{ ...after.gameState.hazards[0], id: "vehicle:unbounded" }] }, entities: [{ ...after.entities![0], id: "vehicle:unbounded" }] };
+    assert.equal(drive555Adapter.deriveEventDrafts(forgedBefore, forgedAfter).some((draft) => draft.type === "hazard.avoided"), false);
+  });
+
   it("detects exactly one attributed stall only after a gap-free four-second reflected forward plateau", () => {
     let window = drive555EventWindowDetector.initialState();
     for (const [sequence, at, z] of [[1, 0, 1000], [2, 250, 1005], [3, 500, 1008], [4, 750, 1010], [5, 1000, 1010], [6, 1250, 1010], [7, 1500, 1010], [8, 1750, 1010], [9, 2000, 1010], [10, 2250, 1010], [11, 2500, 1010], [12, 2750, 1010], [13, 3000, 1010], [14, 3250, 1010], [15, 3500, 1010], [16, 3750, 1010]]) {

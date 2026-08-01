@@ -32,6 +32,7 @@ export interface Drive555EventWindowState {
 }
 
 const rawLifecycle = new Set<Drive555RawState["lifecycle"]>(["menu", "countdown", "playing", "paused", "game_over", "completed"]);
+const trackHazardId = /^track:(0|[1-9]\d*):(0|[1-9]\d*)$/;
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 const integer = (value: unknown, name: string): number => typeof value === "number" && Number.isFinite(value) && Number.isInteger(value) ? value : (() => { throw new TypeError(`${name} must be a finite integer`); })();
 const finite = (value: unknown, name: string): number => typeof value === "number" && Number.isFinite(value) ? value : (() => { throw new TypeError(`${name} must be a finite number`); })();
@@ -56,7 +57,8 @@ function validateRawState(value: unknown): Drive555RawState {
   const hazards = value.hazards.map((hazard) => {
     if (!isRecord(hazard)) throw new TypeError("555Drive hazard must be an object");
     closed(hazard, ["id", "relativeX", "relativeZ", "relativeVelocityZ"], "555Drive hazard");
-    return { id: nonEmpty(hazard.id, "hazard.id"), relativeX: finite(hazard.relativeX, "hazard.relativeX"), relativeZ: finite(hazard.relativeZ, "hazard.relativeZ"), relativeVelocityZ: finite(hazard.relativeVelocityZ, "hazard.relativeVelocityZ") };
+    const id = nonEmpty(hazard.id, "hazard.id"); if (!trackHazardId.test(id)) throw new TypeError("555Drive hazard id must be track:<segmentIndex>:<trackObjectIndex>");
+    return { id, relativeX: finite(hazard.relativeX, "hazard.relativeX"), relativeZ: finite(hazard.relativeZ, "hazard.relativeZ"), relativeVelocityZ: finite(hazard.relativeVelocityZ, "hazard.relativeVelocityZ") };
   });
   if (new Set(hazards.map((hazard) => hazard.id)).size !== hazards.length) throw new TypeError("555Drive hazards must have stable unique IDs");
   let lastCollision: Drive555RawState["lastCollision"] = null;
@@ -157,7 +159,7 @@ export const drive555Adapter: GameAdapter<Drive555RawState, Drive555RawState> = 
     for (const hazard of before.hazards) {
       const later = after.hazards.find((candidate) => candidate.id === hazard.id);
       const collided = after.collisionSequence !== before.collisionSequence && after.lastCollision?.objectId === hazard.id;
-      if (later && hazard.relativeZ > 0 && later.relativeZ < 0 && !collided) drafts.push({ type: "hazard.avoided", payload: { hazardId: hazard.id } });
+      if (trackHazardId.test(hazard.id) && later && hazard.relativeZ > 0 && later.relativeZ < 0 && !collided) drafts.push({ type: "hazard.avoided", payload: { hazardId: hazard.id } });
     }
     return drafts;
   },
