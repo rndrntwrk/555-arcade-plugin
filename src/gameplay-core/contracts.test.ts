@@ -16,6 +16,7 @@ import {
   validateManifest,
   validateObservation,
   validateProgressVerdict,
+  validateDrive555RecoveryPolicy,
 } from "./index.js";
 
 const manifest: import("./contracts.js").GameAdapterManifest = {
@@ -78,13 +79,13 @@ describe("gameplay core canonical contracts", () => {
     const raw = { gameRunId: "run-1", leaseId: "lease-1", fence: 7, directiveId: "directive-1", goal: "finish", strategyFamily: "racing_line", gameplayPolicyId: "racing_line", gameplayPolicyVersion: 1, policySnapshot: policy, recoveryPolicy: recovery, memoryProvenanceIds: [], issuedAtAgentMonotonicMs: 1, validForMs: 250, agentClockDomainId: "agent", directiveDigest: "", gameplayPolicyDigest: "" };
     const withPolicy = { ...raw, gameplayPolicyDigest: sha256Canonical({ policySnapshot: policy, policySchemaVersion: "racing.v1", recoveryPolicy: recovery, recoveryPolicySchemaVersion: "555drive.recovery.v1" }) };
     const directive = { ...withPolicy, directiveDigest: digestWithout(withPolicy, ["directiveDigest"]) };
-    assert.deepEqual(validateDirective(directive, (value) => policy), directive);
-    assert.throws(() => validateDirective({ ...directive, recoveryPolicy: undefined }, (value) => policy));
+    assert.deepEqual(validateDirective(directive, (value) => policy, validateDrive555RecoveryPolicy), directive);
+    assert.throws(() => validateDirective({ ...directive, recoveryPolicy: undefined }, (value) => policy, validateDrive555RecoveryPolicy));
     const arbitraryRecovery = { schemaVersion: "555drive.recovery.v1", any: "thing" };
     const arbitraryPolicyDigest = sha256Canonical({ policySnapshot: policy, policySchemaVersion: "racing.v1", recoveryPolicy: arbitraryRecovery, recoveryPolicySchemaVersion: "555drive.recovery.v1" });
     const arbitrary = { ...directive, recoveryPolicy: arbitraryRecovery, gameplayPolicyDigest: arbitraryPolicyDigest };
-    assert.throws(() => validateDirective({ ...arbitrary, directiveDigest: digestWithout(arbitrary, ["directiveDigest"]) }, (value) => policy));
-    assert.throws(() => validateDirective({ ...directive, directiveDigest: "0".repeat(64) }, (value) => policy));
+    assert.throws(() => validateDirective({ ...arbitrary, directiveDigest: digestWithout(arbitrary, ["directiveDigest"]) }, (value) => policy, validateDrive555RecoveryPolicy));
+    assert.throws(() => validateDirective({ ...directive, directiveDigest: "0".repeat(64) }, (value) => policy, validateDrive555RecoveryPolicy));
   });
 
   it("catches incomplete intent envelopes even when their digest and commands are valid", () => {
@@ -106,22 +107,41 @@ describe("gameplay core canonical contracts", () => {
     assert.equal(events[0].sourceId, "source-1"); assert.equal(events[0].fence, 7); assert.equal(events[0].occurredAtAuthorityMs, 1000);
     assert.match(events[0].eventId, /^[a-f0-9]{64}$/); assert.match(events[0].eventDigest, /^[a-f0-9]{64}$/);
     assert.throws(() => finalizeGameEvents({ ...observation, sourceId: "" }, "555drive.events.v1", [{ type: "x", payload: {} }]));
+    for (const authored of [{ type: "collision", payload: {}, eventIndex: 4 }, { type: "collision", payload: {}, sourceId: "forged" }, { type: "collision", payload: {}, occurredAtAuthorityMs: 1 }, { type: "collision", payload: {}, eventId: "x" }, { type: "collision", payload: {}, eventDigest: "x" }]) assert.throws(() => finalizeGameEvents(observation, "555drive.events.v1", [authored]));
   });
 
   it("catches source-authority and digest changes in observations, events, verdicts, and decisions", () => {
-    const correlation = { leaseId: "lease-1", fence: 7, ownerType: "agent" as const, directiveId: "directive-1", decisionId: "decision-1", semanticIntentDigest: "d".repeat(64), mappedControlsDigest: "e".repeat(64), appliedControlsDigest: "f".repeat(64) };
+    const appliedControls = { accelerate: 1, brake: 0, steer: 0 };
+    const correlation = { leaseId: "lease-1", fence: 7, ownerType: "agent" as const, directiveId: "directive-1", decisionId: "decision-1", semanticIntentDigest: "d".repeat(64), mappedControlsDigest: "e".repeat(64), appliedControlsDigest: sha256Canonical(appliedControls) };
     assert.deepEqual(validateAppliedDecisionCorrelation(correlation), correlation);
-    const observed = { ...observation, appliedDecision: correlation };
+    const observed = { ...observation, appliedControls, appliedDecision: correlation };
     assert.deepEqual(validateObservation(observed), observed);
     const event = finalizeGameEvents(observed, "555drive.events.v1", [{ type: "collision", payload: { z: 1 } }])[0];
-    assert.deepEqual(validateGameEvent(event), event);
+    assert.deepEqual(validateGameEvent(event, observed), event);
     const verdictBase = { gameRunId: "run-1", sourceId: "source-1", fence: 7, controlOwnerType: "agent" as const, evidenceWindowContextDigest: "b".repeat(64), progressSchemaVersion: "555drive.progress.v1", fromSourceObservationSequence: 8, toSourceObservationSequence: 9, fromSourceObservationDigest: "1".repeat(64), toSourceObservationDigest: "c".repeat(64), evaluatedAtAuthorityMs: 1000, progressed: true, metrics: { distance: 1 }, contributingDecisionIds: ["decision-1"] };
     const verdictId = sha256Canonical({ gameRunId: verdictBase.gameRunId, sourceId: verdictBase.sourceId, fence: verdictBase.fence, controlOwnerType: verdictBase.controlOwnerType, evidenceWindowContextDigest: verdictBase.evidenceWindowContextDigest, progressSchemaVersion: verdictBase.progressSchemaVersion, fromSourceObservationSequence: verdictBase.fromSourceObservationSequence, toSourceObservationSequence: verdictBase.toSourceObservationSequence, fromSourceObservationDigest: verdictBase.fromSourceObservationDigest, toSourceObservationDigest: verdictBase.toSourceObservationDigest });
     const verdict = { ...verdictBase, verdictId, verdictDigest: sha256Canonical({ ...verdictBase, verdictId }) };
-    assert.deepEqual(validateProgressVerdict(verdict), verdict);
+    const previous = { ...observed, sequence: 8, sourceObservationSequence: 8, sourceObservationDigest: "1".repeat(64), observedAtAuthorityMs: 900 };
+    assert.deepEqual(validateProgressVerdict(verdict, previous, observed), verdict);
     for (const changed of [{ ...observed, sourceId: "source-2" }, { ...observed, fence: 8 }, { ...observed, controlOwnerType: null }, { ...observed, sourceObservationSequence: 10, sequence: 10 }, { ...observed, sourceObservationDigest: "0".repeat(64) }, { ...observed, observedAtAuthorityMs: 1001 }]) assert.throws(() => validateObservation(changed, observed));
     assert.throws(() => validateObservation({ ...observed, appliedDecision: { ...correlation, ownerType: "certification_harness" } }));
-    assert.throws(() => validateGameEvent({ ...event, sourceId: "source-2" }));
-    assert.throws(() => validateProgressVerdict({ ...verdict, toSourceObservationSequence: 10 }));
+    assert.throws(() => validateGameEvent({ ...event, sourceId: "source-2" }, observed));
+    assert.throws(() => validateGameEvent({ ...event, extra: true }, observed));
+    assert.throws(() => validateProgressVerdict({ ...verdict, toSourceObservationSequence: 10 }, previous, observed));
+    assert.throws(() => validateProgressVerdict({ ...verdict, extra: true }, previous, observed));
+    const reattributedEvent = { ...event, sourceId: "source-2" }; const reattributedEventStable = { gameRunId: reattributedEvent.gameRunId, sourceId: reattributedEvent.sourceId, fence: reattributedEvent.fence, controlOwnerType: reattributedEvent.controlOwnerType, evidenceWindowContextDigest: reattributedEvent.evidenceWindowContextDigest, eventSchemaVersion: reattributedEvent.eventSchemaVersion, type: reattributedEvent.type, sourceObservationSequence: reattributedEvent.sourceObservationSequence, sourceObservationDigest: reattributedEvent.sourceObservationDigest, eventIndex: reattributedEvent.eventIndex }; reattributedEvent.eventId = sha256Canonical(reattributedEventStable); reattributedEvent.eventDigest = sha256Canonical({ ...reattributedEventStable, eventId: reattributedEvent.eventId, occurredAtAuthorityMs: reattributedEvent.occurredAtAuthorityMs, payload: reattributedEvent.payload });
+    assert.throws(() => validateGameEvent(reattributedEvent, observed));
+    const reattributedVerdict = { ...verdict, sourceId: "source-2" }; const reattributedVerdictStable = { gameRunId: reattributedVerdict.gameRunId, sourceId: reattributedVerdict.sourceId, fence: reattributedVerdict.fence, controlOwnerType: reattributedVerdict.controlOwnerType, evidenceWindowContextDigest: reattributedVerdict.evidenceWindowContextDigest, progressSchemaVersion: reattributedVerdict.progressSchemaVersion, fromSourceObservationSequence: reattributedVerdict.fromSourceObservationSequence, toSourceObservationSequence: reattributedVerdict.toSourceObservationSequence, fromSourceObservationDigest: reattributedVerdict.fromSourceObservationDigest, toSourceObservationDigest: reattributedVerdict.toSourceObservationDigest }; reattributedVerdict.verdictId = sha256Canonical(reattributedVerdictStable); const unsignedVerdict = { ...reattributedVerdict }; delete (unsignedVerdict as Partial<typeof reattributedVerdict>).verdictDigest; reattributedVerdict.verdictDigest = sha256Canonical(unsignedVerdict);
+    assert.throws(() => validateProgressVerdict(reattributedVerdict, previous, observed));
+  });
+
+  it("rejects unknown and malformed observation structures", () => {
+    for (const malformed of [
+      { ...observation, unknown: true }, { ...observation, lifecycle: "racing" }, { ...observation, gameState: undefined },
+      { ...observation, player: { speed: Infinity } }, { ...observation, progression: { checkpoint: "one" } },
+      { ...observation, entities: [{ id: "e", kind: "hazard", extra: true }] }, { ...observation, appliedControls: { steer: Infinity } },
+    ]) assert.throws(() => validateObservation(malformed));
+    const controls = { steer: 1 }; const mismatch = { ...observation, appliedControls: controls, appliedDecision: { leaseId: "l", fence: 7, ownerType: "agent", directiveId: "d", decisionId: "x", semanticIntentDigest: "1".repeat(64), mappedControlsDigest: "2".repeat(64), appliedControlsDigest: "3".repeat(64) } };
+    assert.throws(() => validateObservation(mismatch));
   });
 });

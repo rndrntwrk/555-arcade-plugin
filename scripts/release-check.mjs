@@ -73,8 +73,9 @@ const verifyPureGameplayGraph = (entrypoint, extension) => {
     if (visited.has(file)) return;
     visited.add(file);
     const source = readFileSync(file, "utf8");
-    if (/(?:from\s*|import\s*)["'][^"']*(?:@elizaos\/core|\.\.\/index|milaidy|555stream)["']|process\.env|createArcade555Plugin/.test(source)) throw new Error(`impure gameplay-core dependency in ${file}`);
-    for (const match of source.matchAll(/(?:import|export)\s+(?:type\s+)?(?:[^'";]+?\s+from\s+)?["'](\.[^"']+)["']/g)) {
+    if (/(?:from\s*|import\s*\(?\s*)["'][^"']*(?:@elizaos\/core|\.\.\/index|milaidy|555stream)["']|process\.env|createArcade555Plugin/.test(source)) throw new Error(`impure gameplay-core dependency in ${file}`);
+    const specifiers = [...source.matchAll(/(?:import|export)\s+(?:type\s+)?(?:[^'";]+?\s+from\s+)?["'](\.[^"']+)["']/g), ...source.matchAll(/import\s*\(\s*["'](\.[^"']+)["']\s*\)/g)];
+    for (const match of specifiers) {
       const imported = resolve(dirname(file), match[1].replace(/\.js$/, extension));
       if (!existsSync(imported)) throw new Error(`missing gameplay-core dependency ${imported}`);
       visit(imported);
