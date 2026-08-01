@@ -218,4 +218,20 @@ describe("555Drive adapter", () => {
     assert.deepEqual(frozen.nextState.qualifyingReflectedForwardDecisionIds, state.qualifyingReflectedForwardDecisionIds);
     assert.equal(frozen.eventDrafts.length, 0);
   });
+
+  it("seeds a rearmed plateau from the same adjacent progress sample's reflected forward decision", () => {
+    const forward = { accelerate: 1, brake: 0, steer: 0 }; let state = drive555EventWindowDetector.initialState();
+    for (let sequence = 1, at = 0; at <= 4000; sequence += 1, at += 250) {
+      const decision = sequence === 1 ? { ...correlation("first-forward"), appliedControlsDigest: digest(forward) } : undefined;
+      state = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(sequence, at, forward, decision), reflectedDecisionIds: decision === undefined ? [] : ["first-forward"] }).nextState;
+    }
+    const rearmDecision = { ...correlation("rearm-forward"), appliedControlsDigest: digest(forward) };
+    state = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(18, 4250, forward, rearmDecision, "agent", { player: { x: 0, z: 2020, velocityX: 0, velocityZ: 0 } }), reflectedDecisionIds: ["rearm-forward"] }).nextState;
+    assert.equal(state.plateauStartedSourceObservationSequence, 18); assert.deepEqual(state.qualifyingReflectedForwardDecisionIds, ["rearm-forward"]);
+    let drafts: import("../../contracts.js").GameEventDraft[] = [];
+    for (let sequence = 19, at = 4500; at <= 8250; sequence += 1, at += 250) {
+      const accepted = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(sequence, at, forward, undefined, "agent", { player: { x: 0, z: 2020, velocityX: 0, velocityZ: 0 } }), reflectedDecisionIds: [] }); state = accepted.nextState; drafts = accepted.eventDrafts;
+    }
+    assert.deepEqual(drafts, [{ type: "player.stalled", payload: { fromSourceObservationSequence: 18, toSourceObservationSequence: 34, plateauStartedAtAuthorityMs: 4250, observedAtAuthorityMs: 8250, minimumZ: 2020, maximumZ: 2020, positionRange: 0, qualifyingDecisionIds: ["rearm-forward"] } }]);
+  });
 });

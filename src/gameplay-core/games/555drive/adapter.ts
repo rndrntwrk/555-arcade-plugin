@@ -118,7 +118,8 @@ export const drive555EventWindowDetector: DeterministicEventWindowDetector<Drive
     const forwardDiscontinuity = !identityChanged && state.lastSourceObservationSequence !== null && state.lastObservedAtAuthorityMs !== null && valid.sourceObservationSequence > state.lastSourceObservationSequence && valid.observedAtAuthorityMs > state.lastObservedAtAuthorityMs && !orderedContinuation;
     const reset = !orderedContinuation;
     const z = valid.gameState.player.z;
-    const qualifyingId = (!state.emittedForCurrentPlateau || reset) && (state.lastSourceObservationSequence === null || identityChanged || orderedContinuation || forwardDiscontinuity) ? qualifyingForwardDecisionId(valid, reflectedDecisionIds) : null;
+    const observedQualifyingId = (state.lastSourceObservationSequence === null || identityChanged || orderedContinuation || forwardDiscontinuity) ? qualifyingForwardDecisionId(valid, reflectedDecisionIds) : null;
+    const qualifyingId = (!state.emittedForCurrentPlateau || reset) ? observedQualifyingId : null;
     const qualifyingIds = (ids: readonly string[]) => [...new Set(qualifyingId === null ? ids : [...ids, qualifyingId])].sort();
     const base: Drive555EventWindowState = reset ? { gameRunId: valid.gameRunId, sourceId: valid.sourceId, fence: valid.fence, plateauStartedAtAuthorityMs: valid.observedAtAuthorityMs, plateauStartedSourceObservationSequence: valid.sourceObservationSequence, minimumZ: z, maximumZ: z, sawReflectedForwardIntent: qualifyingId !== null, qualifyingReflectedForwardDecisionIds: qualifyingIds([]), emittedForCurrentPlateau: false, lastSourceObservationSequence: valid.sourceObservationSequence, lastObservedAtAuthorityMs: valid.observedAtAuthorityMs } : { ...state, minimumZ: Math.min(state.minimumZ!, z), maximumZ: Math.max(state.maximumZ!, z), sawReflectedForwardIntent: qualifyingIds(state.qualifyingReflectedForwardDecisionIds).length > 0, qualifyingReflectedForwardDecisionIds: qualifyingIds(state.qualifyingReflectedForwardDecisionIds), lastSourceObservationSequence: valid.sourceObservationSequence, lastObservedAtAuthorityMs: valid.observedAtAuthorityMs };
     const range = base.maximumZ! - base.minimumZ!;
@@ -126,7 +127,10 @@ export const drive555EventWindowDetector: DeterministicEventWindowDetector<Drive
       const qualifyingDecisionIds = base.qualifyingReflectedForwardDecisionIds;
       if (qualifyingDecisionIds.length > 0) return { nextState: { ...base, emittedForCurrentPlateau: true }, eventDrafts: [{ type: "player.stalled", payload: { fromSourceObservationSequence: base.plateauStartedSourceObservationSequence, toSourceObservationSequence: valid.sourceObservationSequence, plateauStartedAtAuthorityMs: base.plateauStartedAtAuthorityMs, observedAtAuthorityMs: valid.observedAtAuthorityMs, minimumZ: base.minimumZ, maximumZ: base.maximumZ, positionRange: range, qualifyingDecisionIds } }] };
     }
-    if (!reset && range > 10) return { nextState: { ...base, plateauStartedAtAuthorityMs: valid.observedAtAuthorityMs, plateauStartedSourceObservationSequence: valid.sourceObservationSequence, minimumZ: z, maximumZ: z, sawReflectedForwardIntent: qualifyingId !== null, qualifyingReflectedForwardDecisionIds: qualifyingIds([]), emittedForCurrentPlateau: false }, eventDrafts: [] };
+    if (!reset && range > 10) {
+      const rearmIds = observedQualifyingId === null ? [] : [observedQualifyingId];
+      return { nextState: { ...base, plateauStartedAtAuthorityMs: valid.observedAtAuthorityMs, plateauStartedSourceObservationSequence: valid.sourceObservationSequence, minimumZ: z, maximumZ: z, sawReflectedForwardIntent: rearmIds.length > 0, qualifyingReflectedForwardDecisionIds: rearmIds, emittedForCurrentPlateau: false }, eventDrafts: [] };
+    }
     return { nextState: base, eventDrafts: [] };
   },
 };
