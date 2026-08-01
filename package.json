@@ -26,6 +26,9 @@
       "import": "./dist/gameplay-core/index.js",
       "types": "./dist/gameplay-core/index.d.ts"
     },
+    "./gameplay-core/controller-artifacts.json": {
+      "default": "./dist/gameplay-core/controller-artifacts.json"
+    },
     "./milaidy": {
       "import": "./dist/milaidy/factory.js",
       "types": "./dist/milaidy/factory.d.ts"
@@ -57,7 +60,8 @@
     "elizaos.plugin.json"
   ],
   "scripts": {
-    "build": "bun run clean && tsc",
+    "build": "bun run clean && tsc && bun run build:gameplay-controller-artifacts",
+    "build:gameplay-controller-artifacts": "node scripts/build-gameplay-controller-artifact.mjs --entrypoint dist/gameplay-core/games/555drive/racing-line.js --package-name @rndrntwrk/plugin-555arcade --controller-id racing_line --controller-version 1.0.0 --output dist/gameplay-core/controller-artifacts.json",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",

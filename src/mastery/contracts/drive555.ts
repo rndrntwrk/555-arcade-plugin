@@ -1,4 +1,5 @@
 import { createMasteryContract } from "./_shared.js";
+import { DRIVE555_RACING_LINE_POLICY_DEFAULTS } from "../../gameplay-core/games/555drive/racing-line.js";
 
 export const drive555MasteryContract = createMasteryContract({
   gameId: "555drive",
@@ -62,11 +63,6 @@ export const drive555MasteryContract = createMasteryContract({
   },
   policy: {
     family: "racing_line",
-    defaults: {
-      reactionWindowMs: 190,
-      riskTolerance: 0.4,
-      recenterBias: 0.8,
-      hazardAvoidanceBias: 0.84,
-    },
+    defaults: DRIVE555_RACING_LINE_POLICY_DEFAULTS as unknown as import("../../intelligence/types.js").JsonRecord,
   },
 });
