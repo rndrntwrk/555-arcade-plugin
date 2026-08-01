@@ -6,7 +6,7 @@ import type { ControllerArtifactManifest } from "./contracts.js";
 
 export interface ControllerArtifactBuildInput { entrypoint: string; packageName: string; controllerId: string; controllerVersion: string; }
 const sha256Bytes = (bytes: Uint8Array): string => createHash("sha256").update(bytes).digest("hex");
-const staticImport = /(?:^|[;\n])\s*(?:import\s+(?:[^'";]+?\s+from\s+)?|export\s+[^'";]+?\s+from\s+)["']([^"']+)["']/gm;
+const staticImport = /(?:^|[;\n])\s*(?:import(?:\s*(?:type\s*)?(?:[\w$*{},\s]*?\bfrom)?)?|export(?:\s*(?:type\s*)?(?:[\w$*{},\s]*?\bfrom)?)?)\s*["']([^"']+)["']/gm;
 
 export function validateControllerArtifactManifest(value: unknown): ControllerArtifactManifest {
   if (typeof value !== "object" || value === null || Array.isArray(value)) throw new TypeError("artifact manifest must be an object");
@@ -15,7 +15,7 @@ export function validateControllerArtifactManifest(value: unknown): ControllerAr
   if (record.schemaVersion !== "gameplay-controller-artifact.v1" || !["packageName", "controllerId", "controllerVersion", "entrypoint", "artifactDigest"].every((key) => typeof record[key] === "string" && (record[key] as string).length > 0) || !Array.isArray(record.files)) throw new TypeError("invalid artifact manifest fields");
   if (!/^[a-f0-9]{64}$/.test(record.artifactDigest as string) || !String(record.entrypoint).endsWith(".js") || String(record.entrypoint).includes("/") || String(record.entrypoint).includes("\\")) throw new TypeError("invalid artifact manifest digest or entrypoint");
   const files = record.files.map((file) => { if (typeof file !== "object" || file === null || Array.isArray(file)) throw new TypeError("invalid artifact file"); const item = file as Record<string, unknown>; if (Object.keys(item).length !== 2 || typeof item.path !== "string" || typeof item.sha256 !== "string" || !item.path.endsWith(".js") || item.path.startsWith("/") || item.path.includes("..") || !/^[a-f0-9]{64}$/.test(item.sha256)) throw new TypeError("invalid artifact file"); return { path: item.path, sha256: item.sha256 }; });
-  if (new Set(files.map((file) => file.path)).size !== files.length || files.some((file, index) => index > 0 && files[index - 1].path.localeCompare(file.path) >= 0)) throw new TypeError("artifact files must be unique lexical paths");
+  if (files.length === 0 || !files.some((file) => file.path === record.entrypoint) || new Set(files.map((file) => file.path)).size !== files.length || files.some((file, index) => index > 0 && files[index - 1].path.localeCompare(file.path) >= 0)) throw new TypeError("artifact files must be a lexical runtime graph containing entrypoint");
   const manifest: ControllerArtifactManifest = { schemaVersion: "gameplay-controller-artifact.v1", packageName: record.packageName as string, controllerId: record.controllerId as string, controllerVersion: record.controllerVersion as string, entrypoint: record.entrypoint as string, files, artifactDigest: record.artifactDigest as string };
   if (digestWithout(manifest, ["artifactDigest"]) !== manifest.artifactDigest) throw new TypeError("artifact manifest digest mismatch"); return manifest;
 }

@@ -15,3 +15,15 @@ test("build script writes a canonical artifact manifest from only compiled input
   assert.equal(manifest.files[0].path, "controller.js");
   assert.match(manifest.artifactDigest, /^[a-f0-9]{64}$/);
 });
+
+test("build script follows compact named and namespace imports", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "gameplay-artifact-script-compact-"));
+  const entrypoint = join(directory, "controller.js");
+  const output = join(directory, "manifest.json");
+  await writeFile(entrypoint, 'import{a}from"./a.js";import*as b from"./b.js";');
+  await writeFile(join(directory, "a.js"), "export const a = 1;");
+  await writeFile(join(directory, "b.js"), "export const b = 1;");
+  const result = Bun.spawnSync(["node", resolve("scripts/build-gameplay-controller-artifact.mjs"), "--entrypoint", entrypoint, "--package-name", "@scope/core", "--controller-id", "test", "--controller-version", "1.0.0", "--output", output]);
+  assert.equal(result.exitCode, 0, Buffer.from(result.stderr).toString());
+  assert.deepEqual(JSON.parse(await Bun.file(output).text()).files.map((file) => file.path), ["a.js", "b.js", "controller.js"]);
+});

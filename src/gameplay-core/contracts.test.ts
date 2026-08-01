@@ -7,10 +7,15 @@ import {
   digestWithout,
   DRIVE555_V0_MANIFEST,
   finalizeGameEvents,
+  mapControlIntent,
   sha256Canonical,
+  validateAppliedDecisionCorrelation,
   validateControlIntent,
   validateDirective,
+  validateGameEvent,
   validateManifest,
+  validateObservation,
+  validateProgressVerdict,
 } from "./index.js";
 
 const manifest: import("./contracts.js").GameAdapterManifest = {
@@ -55,12 +60,13 @@ describe("gameplay core canonical contracts", () => {
   it("catches manifest drift, undeclared raw controls, duplicates, and descriptor-order mapping changes", () => {
     assert.deepEqual(validateManifest(DRIVE555_V0_MANIFEST), manifest);
     assert.throws(() => validateManifest({ ...manifest, controls: { ...manifest.controls, descriptors: [...manifest.controls.descriptors, { ...manifest.controls.descriptors[0] }] } }));
-    const base = { gameRunId: "run-1", leaseId: "lease-1", fence: 7, directiveId: "directive-1", decisionId: "decision-1", observationSequence: 9, decidedAtAgentMonotonicMs: 1, maximumAgeMs: 250, agentClockDomainId: "agent", reasonCode: "pursue_objective", commands: [{ kind: "analog", controlId: "steer", value: 0.5 }], semanticIntentDigest: "" };
+    const base: import("./contracts.js").GameControlIntent = { gameRunId: "run-1", leaseId: "lease-1", fence: 7, directiveId: "directive-1", decisionId: "decision-1", observationSequence: 9, decidedAtAgentMonotonicMs: 1, maximumAgeMs: 250, agentClockDomainId: "agent", reasonCode: "pursue_objective", commands: [{ kind: "analog", controlId: "steer", value: 0.5 }], semanticIntentDigest: "" };
     const intent = { ...base, semanticIntentDigest: digestWithout(base, ["semanticIntentDigest"]) };
-    assert.deepEqual(validateControlIntent(intent, manifest).commands, [
+    assert.deepEqual(validateControlIntent(intent, manifest).commands, base.commands);
+    assert.deepEqual(mapControlIntent(intent, manifest).commands, [
       { kind: "analog", controlId: "accelerate", value: 0 }, { kind: "analog", controlId: "brake", value: 0 }, { kind: "analog", controlId: "steer", value: 0.5 },
     ]);
-    assert.equal(validateControlIntent(intent, manifest).maximumHoldMs, 250);
+    assert.equal(mapControlIntent(intent, manifest).maximumHoldMs, 250);
     assert.throws(() => validateControlIntent({ ...intent, commands: [{ kind: "analog", controlId: "steer", value: Infinity }] }, manifest));
     assert.throws(() => validateControlIntent({ ...intent, commands: [{ kind: "analog", controlId: "unknown", value: 0 }] }, manifest));
     assert.throws(() => validateControlIntent({ ...intent, commands: [{ kind: "pointer", controlId: "steer", coordinateSpace: "game-normalized", x: 0, y: 0, phase: "move" }] }, manifest));
@@ -74,7 +80,21 @@ describe("gameplay core canonical contracts", () => {
     const directive = { ...withPolicy, directiveDigest: digestWithout(withPolicy, ["directiveDigest"]) };
     assert.deepEqual(validateDirective(directive, (value) => policy), directive);
     assert.throws(() => validateDirective({ ...directive, recoveryPolicy: undefined }, (value) => policy));
+    const arbitraryRecovery = { schemaVersion: "555drive.recovery.v1", any: "thing" };
+    const arbitraryPolicyDigest = sha256Canonical({ policySnapshot: policy, policySchemaVersion: "racing.v1", recoveryPolicy: arbitraryRecovery, recoveryPolicySchemaVersion: "555drive.recovery.v1" });
+    const arbitrary = { ...directive, recoveryPolicy: arbitraryRecovery, gameplayPolicyDigest: arbitraryPolicyDigest };
+    assert.throws(() => validateDirective({ ...arbitrary, directiveDigest: digestWithout(arbitrary, ["directiveDigest"]) }, (value) => policy));
     assert.throws(() => validateDirective({ ...directive, directiveDigest: "0".repeat(64) }, (value) => policy));
+  });
+
+  it("catches incomplete intent envelopes even when their digest and commands are valid", () => {
+    const base = { gameRunId: "run-1", leaseId: "lease-1", fence: 7, directiveId: "directive-1", decisionId: "decision-1", observationSequence: 9, decidedAtAgentMonotonicMs: 1, maximumAgeMs: 250, agentClockDomainId: "agent", reasonCode: "pursue_objective", commands: [], semanticIntentDigest: "" };
+    const valid = { ...base, semanticIntentDigest: digestWithout(base, ["semanticIntentDigest"]) };
+    assert.deepEqual(validateControlIntent(valid, manifest), valid);
+    for (const field of ["gameRunId", "leaseId", "fence", "directiveId", "decisionId", "observationSequence", "agentClockDomainId", "reasonCode"] as const) {
+      const incomplete = { ...valid }; delete (incomplete as Record<string, unknown>)[field];
+      assert.throws(() => validateControlIntent(incomplete, manifest));
+    }
   });
 
   it("catches attribution changes and assigns deterministic event IDs only at finalization", () => {
@@ -86,5 +106,22 @@ describe("gameplay core canonical contracts", () => {
     assert.equal(events[0].sourceId, "source-1"); assert.equal(events[0].fence, 7); assert.equal(events[0].occurredAtAuthorityMs, 1000);
     assert.match(events[0].eventId, /^[a-f0-9]{64}$/); assert.match(events[0].eventDigest, /^[a-f0-9]{64}$/);
     assert.throws(() => finalizeGameEvents({ ...observation, sourceId: "" }, "555drive.events.v1", [{ type: "x", payload: {} }]));
+  });
+
+  it("catches source-authority and digest changes in observations, events, verdicts, and decisions", () => {
+    const correlation = { leaseId: "lease-1", fence: 7, ownerType: "agent" as const, directiveId: "directive-1", decisionId: "decision-1", semanticIntentDigest: "d".repeat(64), mappedControlsDigest: "e".repeat(64), appliedControlsDigest: "f".repeat(64) };
+    assert.deepEqual(validateAppliedDecisionCorrelation(correlation), correlation);
+    const observed = { ...observation, appliedDecision: correlation };
+    assert.deepEqual(validateObservation(observed), observed);
+    const event = finalizeGameEvents(observed, "555drive.events.v1", [{ type: "collision", payload: { z: 1 } }])[0];
+    assert.deepEqual(validateGameEvent(event), event);
+    const verdictBase = { gameRunId: "run-1", sourceId: "source-1", fence: 7, controlOwnerType: "agent" as const, evidenceWindowContextDigest: "b".repeat(64), progressSchemaVersion: "555drive.progress.v1", fromSourceObservationSequence: 8, toSourceObservationSequence: 9, fromSourceObservationDigest: "1".repeat(64), toSourceObservationDigest: "c".repeat(64), evaluatedAtAuthorityMs: 1000, progressed: true, metrics: { distance: 1 }, contributingDecisionIds: ["decision-1"] };
+    const verdictId = sha256Canonical({ gameRunId: verdictBase.gameRunId, sourceId: verdictBase.sourceId, fence: verdictBase.fence, controlOwnerType: verdictBase.controlOwnerType, evidenceWindowContextDigest: verdictBase.evidenceWindowContextDigest, progressSchemaVersion: verdictBase.progressSchemaVersion, fromSourceObservationSequence: verdictBase.fromSourceObservationSequence, toSourceObservationSequence: verdictBase.toSourceObservationSequence, fromSourceObservationDigest: verdictBase.fromSourceObservationDigest, toSourceObservationDigest: verdictBase.toSourceObservationDigest });
+    const verdict = { ...verdictBase, verdictId, verdictDigest: sha256Canonical({ ...verdictBase, verdictId }) };
+    assert.deepEqual(validateProgressVerdict(verdict), verdict);
+    for (const changed of [{ ...observed, sourceId: "source-2" }, { ...observed, fence: 8 }, { ...observed, controlOwnerType: null }, { ...observed, sourceObservationSequence: 10, sequence: 10 }, { ...observed, sourceObservationDigest: "0".repeat(64) }, { ...observed, observedAtAuthorityMs: 1001 }]) assert.throws(() => validateObservation(changed, observed));
+    assert.throws(() => validateObservation({ ...observed, appliedDecision: { ...correlation, ownerType: "certification_harness" } }));
+    assert.throws(() => validateGameEvent({ ...event, sourceId: "source-2" }));
+    assert.throws(() => validateProgressVerdict({ ...verdict, toSourceObservationSequence: 10 }));
   });
 });
