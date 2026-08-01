@@ -27,6 +27,11 @@ function rawSample(sequence: number, at = sequence * 100, changes: Partial<Drive
   return { ...unsigned, rawEnvelopeDigest: digest(Object.fromEntries(Object.entries(unsigned).filter(([key]) => key !== "relaySequence"))) };
 }
 const observe = (sequence: number, at = sequence * 100, changes: Partial<Drive555RawState> = {}, decision = correlation()) => drive555Adapter.normalizeObservation(rawSample(sequence, at, changes, decision), binding, runtime, evidence);
+function observeWithAppliedControl(sequence: number, at: number, appliedControls: Record<string, number | boolean>, appliedDecision: import("../../contracts.js").AppliedDecisionCorrelation | undefined, owner: "agent" | "certification_harness" = "agent", changes: Partial<Drive555RawState> = {}) {
+  const original = rawSample(sequence, at, changes); const unsigned = { ...original, controlOwnerType: owner, appliedControls, appliedControlsDigest: digest(appliedControls), ...(appliedDecision === undefined ? {} : { appliedDecision }) };
+  if (appliedDecision === undefined) delete (unsigned as Partial<typeof unsigned>).appliedDecision;
+  return drive555Adapter.normalizeObservation({ ...unsigned, rawEnvelopeDigest: digest(Object.fromEntries(Object.entries(unsigned).filter(([key]) => key !== "relaySequence" && key !== "rawEnvelopeDigest"))) }, binding, runtime, evidence);
+}
 
 describe("555Drive adapter", () => {
   it("rejects malformed raw samples and binds source authority without relay sequencing", () => {
@@ -100,5 +105,48 @@ describe("555Drive adapter", () => {
     }
     assert.equal(first.plateauStartedSourceObservationSequence, 40);
     assert.deepEqual(drafts, [{ type: "player.stalled", payload: { fromSourceObservationSequence: 40, toSourceObservationSequence: 55, plateauStartedAtAuthorityMs: 100, observedAtAuthorityMs: 4100, minimumZ: 2000, maximumZ: 2010, positionRange: 10, qualifyingDecisionIds: ["decision-1"] } }]);
+  });
+
+  it("retains exact sorted earlier reflected forward decisions through an irregular plateau replay", () => {
+    const forward = { accelerate: 1, brake: 0, steer: 0 }; let state = drive555EventWindowDetector.initialState(); let drafts: import("../../contracts.js").GameEventDraft[] = [];
+    const samples: Array<[number, number, number, string | null, readonly string[]]> = [[40, 100, 2000, "z-forward", ["z-forward"]], [41, 360, 2003, "a-forward", ["a-forward"]], [42, 590, 2007, null, []], [43, 880, 2009, null, []], [44, 1150, 2010, null, []], [45, 1420, 2010, null, []], [46, 1690, 2010, null, []], [47, 1960, 2010, null, []], [48, 2230, 2010, null, []], [49, 2500, 2010, null, []], [50, 2770, 2010, null, []], [51, 3040, 2010, null, []], [52, 3310, 2010, null, []], [53, 3580, 2010, null, []], [54, 3850, 2010, null, []], [55, 4100, 2010, null, []]];
+    for (const [sequence, at, z, decisionId, reflectedDecisionIds] of samples) {
+      const appliedDecision = decisionId === null ? undefined : { ...correlation(decisionId), appliedControlsDigest: digest(forward) };
+      const accepted = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(sequence, at, forward, appliedDecision, "agent", { player: { x: 0, z, velocityX: 0, velocityZ: 0 } }), reflectedDecisionIds }); state = accepted.nextState; drafts = accepted.eventDrafts;
+    }
+    assert.deepEqual(state.qualifyingReflectedForwardDecisionIds, ["a-forward", "z-forward"]);
+    assert.deepEqual(drafts, [{ type: "player.stalled", payload: { fromSourceObservationSequence: 40, toSourceObservationSequence: 55, plateauStartedAtAuthorityMs: 100, observedAtAuthorityMs: 4100, minimumZ: 2000, maximumZ: 2010, positionRange: 10, qualifyingDecisionIds: ["a-forward", "z-forward"] } }]);
+  });
+
+  it("rejects unreflected, non-forward, harness, undecided, late, reversed, and unrelated candidate controls", () => {
+    const forward = { accelerate: 1, brake: 0, steer: 0 }; const neutral = { accelerate: 0, brake: 0, steer: 0 };
+    const agentForward = { ...correlation("agent-forward"), appliedControlsDigest: digest(forward) };
+    const harnessForward = { ...correlation("harness-forward"), ownerType: "certification_harness" as const, appliedControlsDigest: digest(forward) };
+    const nonForward = { ...correlation("agent-neutral"), appliedControlsDigest: digest(neutral) };
+    const cases: Array<{ observation: ReturnType<typeof observeWithAppliedControl>; reflectedDecisionIds: readonly string[] }> = [
+      { observation: observeWithAppliedControl(1, 100, neutral, nonForward), reflectedDecisionIds: ["agent-neutral"] },
+      { observation: observeWithAppliedControl(1, 100, forward, agentForward), reflectedDecisionIds: [] },
+      { observation: observeWithAppliedControl(1, 100, forward, harnessForward, "certification_harness"), reflectedDecisionIds: ["harness-forward"] },
+      { observation: observeWithAppliedControl(1, 100, forward, undefined), reflectedDecisionIds: ["agent-forward"] },
+      { observation: observeWithAppliedControl(1, 100, forward, agentForward), reflectedDecisionIds: ["later-receipt"] },
+      { observation: observeWithAppliedControl(3, 300, forward, agentForward), reflectedDecisionIds: ["unrelated"] },
+    ];
+    for (const input of cases) assert.deepEqual(drive555EventWindowDetector.accept(drive555EventWindowDetector.initialState(), input).nextState.qualifyingReflectedForwardDecisionIds, []);
+    const beforeReceipt = drive555EventWindowDetector.accept(drive555EventWindowDetector.initialState(), { observation: observeWithAppliedControl(1, 100, forward, agentForward), reflectedDecisionIds: [] });
+    const afterReceipt = drive555EventWindowDetector.accept(beforeReceipt.nextState, { observation: observeWithAppliedControl(2, 200, forward, undefined), reflectedDecisionIds: ["agent-forward"] });
+    assert.deepEqual(afterReceipt.nextState.qualifyingReflectedForwardDecisionIds, []);
+    const first = drive555EventWindowDetector.accept(drive555EventWindowDetector.initialState(), { observation: observeWithAppliedControl(2, 200, forward, agentForward), reflectedDecisionIds: ["agent-forward"] });
+    const replay = drive555EventWindowDetector.accept(first.nextState, { observation: observeWithAppliedControl(1, 100, forward, agentForward), reflectedDecisionIds: ["agent-forward"] });
+    assert.deepEqual(replay.nextState.qualifyingReflectedForwardDecisionIds, []);
+    assert.equal(replay.nextState.plateauStartedSourceObservationSequence, 1);
+  });
+
+  it("clears qualifying reflected decisions on forward progress and run restart", () => {
+    const forward = { accelerate: 1, brake: 0, steer: 0 }; const decision = { ...correlation("forward"), appliedControlsDigest: digest(forward) };
+    const first = drive555EventWindowDetector.accept(drive555EventWindowDetector.initialState(), { observation: observeWithAppliedControl(1, 100, forward, decision), reflectedDecisionIds: ["forward"] });
+    const progressed = drive555EventWindowDetector.accept(first.nextState, { observation: observeWithAppliedControl(2, 200, forward, undefined, "agent", { player: { x: 0, z: 2020, velocityX: 0, velocityZ: 0 } }), reflectedDecisionIds: [] });
+    assert.deepEqual(progressed.nextState.qualifyingReflectedForwardDecisionIds, []);
+    const restarted = drive555EventWindowDetector.accept(first.nextState, { observation: { ...observeWithAppliedControl(1, 100, forward, undefined), gameRunId: "run-2" }, reflectedDecisionIds: [] });
+    assert.deepEqual(restarted.nextState.qualifyingReflectedForwardDecisionIds, []);
   });
 });
