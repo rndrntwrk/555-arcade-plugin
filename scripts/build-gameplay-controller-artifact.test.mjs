@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rename, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { test } from "bun:test";
 
 test("build script writes a canonical artifact manifest from only compiled inputs", async () => {
@@ -30,6 +30,8 @@ test("build script follows compact named and namespace imports", async () => {
 
 test("normal clean build replaces stale output with one stable package-loadable racing-line artifact", async () => {
   const artifact = resolve("dist/gameplay-core/controller-artifacts.json");
+  await rm(resolve("dist"), { recursive: true, force: true });
+  await mkdir(dirname(artifact), { recursive: true });
   await writeFile(artifact, "stale");
   let result = Bun.spawnSync(["bun", "run", "build"]);
   assert.equal(result.exitCode, 0, Buffer.from(result.stderr).toString());
@@ -46,6 +48,18 @@ test("normal clean build replaces stale output with one stable package-loadable 
   result = Bun.spawnSync(["bun", "run", "build"]);
   assert.equal(result.exitCode, 0, Buffer.from(result.stderr).toString());
   assert.equal(await readFile(artifact, "utf8"), first);
+});
+
+test("normal build fails when artifact generation is unavailable and restores the generator", async () => {
+  const generator = resolve("scripts/build-gameplay-controller-artifact.mjs"); const backup = `${generator}.test-backup`;
+  await rename(generator, backup);
+  try {
+    const result = Bun.spawnSync(["bun", "run", "build"]);
+    assert.notEqual(result.exitCode, 0);
+  } finally {
+    await rename(backup, generator);
+  }
+  assert.equal(Bun.spawnSync(["bun", "run", "build"]).exitCode, 0);
 });
 
 test("post-build public gameplay-core fixture type-checks adapter/controller types through the package subpath", () => {

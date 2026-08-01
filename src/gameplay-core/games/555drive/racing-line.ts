@@ -68,7 +68,7 @@ export const racingLineController: DeterministicController<Drive555RawState, Rac
     const now = clock.nowMs(); if (!Number.isFinite(now)) throw new TypeError("deterministic clock must return a finite time");
     const candidates = gameState.hazards.map((hazard) => ({ hazard, predictedGap: hazard.relativeZ + hazard.relativeVelocityZ * (policy.reactionWindowMs / 1000) }));
     const clearance = 20 + policy.reactionWindowMs * .1 + policy.hazardAvoidanceBias * 20;
-    const threat = candidates.filter((candidate) => candidate.predictedGap > 0 && candidate.predictedGap <= clearance).sort((left, right) => left.predictedGap - right.predictedGap || left.hazard.id.localeCompare(right.hazard.id))[0];
+    const threat = candidates.filter((candidate) => candidate.hazard.relativeZ > 0 && candidate.predictedGap <= clearance).sort((left, right) => left.predictedGap - right.predictedGap || left.hazard.id.localeCompare(right.hazard.id))[0];
     const playing = gameState.lifecycle === "playing";
     const accelerate = playing ? 1 : 0;
     const brake = playing && threat ? 1 - policy.riskTolerance : 0;

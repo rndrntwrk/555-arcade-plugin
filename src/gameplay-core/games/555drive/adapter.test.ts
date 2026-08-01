@@ -35,8 +35,12 @@ function observeWithAppliedControl(sequence: number, at: number, appliedControls
 
 describe("555Drive adapter", () => {
   it("rejects malformed raw samples and binds source authority without relay sequencing", () => {
-    assert.equal(drive555Adapter.manifest.gameId, "555drive");
-    assert.deepEqual(drive555Adapter.manifest.controls.descriptors.map((item) => item.id), ["accelerate", "brake", "steer"]);
+    assert.deepEqual(drive555Adapter.manifest, {
+      gameId: "555drive", adapterVersion: "1.0.0", observationSchemaVersion: "555drive.observation.v1", eventSchemaVersion: "555drive.events.v1", progressSchemaVersion: "555drive.progress.v1", controlSchemaVersion: "555drive.controls.v1", controllerFamilies: ["racing_line"], supportedLifecycleCommands: ["start", "restart"],
+      observations: { stateSchemaId: "555drive.state.v1", featureIds: ["lifecycle", "frame", "trackSeed", "player.x", "player.z", "player.velocityX", "player.velocityZ", "checkpoint", "remainingTimeMs", "score", "collisionSequence", "lastCollision", "hazards", "appliedControls", "appliedDecision"], appliedControls: true, minimumHz: 10, maximumGapMs: 300 },
+      controls: { descriptors: [{ id: "accelerate", kind: "analog", minimum: 0, maximum: 1, neutral: 0 }, { id: "brake", kind: "analog", minimum: 0, maximum: 1, neutral: 0 }, { id: "steer", kind: "analog", minimum: -1, maximum: 1, neutral: 0 }], commandSemantics: "complete_snapshot", maximumIntentAgeMs: 250, maximumHoldMs: 300, maximumSilenceMs: 500 },
+      evidence: { stateProgression: true, visualProgression: true, deterministicReplay: true },
+    });
     const raw = rawSample(2);
     const normalized = drive555Adapter.normalizeObservation(raw, binding, runtime, evidence);
     assert.equal(normalized.sequence, 2); assert.equal(normalized.sourceObservationDigest, raw.rawEnvelopeDigest);
@@ -49,6 +53,24 @@ describe("555Drive adapter", () => {
       { ...raw, rawState: { ...raw.rawState, lifecycle: "racing" } },
     ]) assert.throws(() => drive555Adapter.normalizeObservation(broken as unknown as import("../../contracts.js").RawGameSampleEnvelope<Drive555RawState>, binding, runtime, evidence));
     assert.equal(drive555Adapter.normalizeObservation({ ...raw, relaySequence: raw.relaySequence + 1 }, binding, runtime, evidence).sourceObservationDigest, raw.rawEnvelopeDigest);
+  });
+
+  it("rejects run/source/fence/owner/runtime/evidence/authority and unsupported raw-value tampering", () => {
+    const raw = rawSample(2);
+    const ownerMismatch = { ...raw, controlOwnerType: "certification_harness" as const };
+    ownerMismatch.rawEnvelopeDigest = digest(Object.fromEntries(Object.entries(ownerMismatch).filter(([key]) => key !== "relaySequence" && key !== "rawEnvelopeDigest")));
+    const fenceMismatch = { ...raw, fence: 8 };
+    fenceMismatch.rawEnvelopeDigest = digest(Object.fromEntries(Object.entries(fenceMismatch).filter(([key]) => key !== "relaySequence" && key !== "rawEnvelopeDigest")));
+    for (const malformed of [
+      { ...raw, gameRunId: "other-run" }, { ...raw, sourceId: "other-source" }, fenceMismatch, ownerMismatch,
+      { ...raw, bridgeVersion: "other-bridge" }, { ...raw, observedAtAuthorityMs: 200.5 }, { ...raw, rawState: { ...raw.rawState, player: { ...raw.rawState.player, x: Infinity } } },
+    ]) assert.throws(() => drive555Adapter.normalizeObservation(malformed as unknown as import("../../contracts.js").RawGameSampleEnvelope<Drive555RawState>, binding, runtime, evidence));
+    assert.throws(() => drive555Adapter.normalizeObservation(raw, binding, runtime, { ...evidence, runtime: { ...runtime, runtimeProvenanceDigest: "0".repeat(64) } }));
+  });
+
+  it("preserves repeated identical applied controls with distinct valid decision correlations", () => {
+    const first = observe(1, 100, {}, correlation("decision-a")); const second = observe(2, 200, {}, correlation("decision-b"));
+    assert.deepEqual(first.appliedControls, second.appliedControls); assert.equal(first.appliedDecision?.decisionId, "decision-a"); assert.equal(second.appliedDecision?.decisionId, "decision-b");
   });
 
   it("maps complete canonical controls and uses the shared finalizer for unattributed drafts", () => {
@@ -74,6 +96,19 @@ describe("555Drive adapter", () => {
     assert.equal(verdict.progressed, true); assert.deepEqual(verdict.contributingDecisionIds, ["decision-a", "decision-b"]);
     assert.equal(drive555Adapter.deriveEventDrafts(previous, { ...current, sourceObservationSequence: 4, sequence: 4 }).length, 0);
     assert.equal(drive555Adapter.deriveEventDrafts(previous, { ...current, observedAtAuthorityMs: 500 }).length, 0);
+  });
+
+  it("derives exact transition payloads and limits progress to player z rather than timers or score", () => {
+    const previous = observe(1, 100, { lifecycle: "playing", score: 10, checkpoint: 1, player: { x: 2, z: 1000, velocityX: 0, velocityZ: 10 } });
+    const current = observe(2, 200, { lifecycle: "completed", score: 15, checkpoint: 3, collisionSequence: 1, lastCollision: { sequence: 1, kind: "track_object", objectId: "track:2:4", physicsFrameSequence: 9 }, player: { x: 4, z: 1125, velocityX: 0, velocityZ: 10 } });
+    assert.deepEqual(drive555Adapter.deriveEventDrafts(previous, current), [
+      { type: "score.improved", payload: { previousScore: 10, currentScore: 15, delta: 5 } },
+      { type: "checkpoint.reached", payload: { previousCheckpoint: 1, currentCheckpoint: 3, delta: 2 } },
+      { type: "run.completed", payload: { previousLifecycle: "playing", currentLifecycle: "completed", finalScore: 15, finalCheckpoint: 3, finalPosition: { x: 4, z: 1125 } } },
+      { type: "collision", payload: { previousCollisionSequence: 0, currentCollisionSequence: 1, delta: 1, collision: { sequence: 1, kind: "track_object", objectId: "track:2:4", physicsFrameSequence: 9 } } },
+    ]);
+    const flat = observe(2, 200, { score: 99, remainingTimeMs: 1, player: { x: 4, z: 1000, velocityX: 9, velocityZ: 0 } });
+    assert.equal(drive555Adapter.evaluateProgress(previous, flat).progressed, false);
   });
 
   it("emits hazard avoidance only for one stable hazard crossing without its collision", () => {
@@ -158,5 +193,29 @@ describe("555Drive adapter", () => {
     assert.deepEqual(progressed.nextState.qualifyingReflectedForwardDecisionIds, []);
     const restarted = drive555EventWindowDetector.accept(first.nextState, { observation: { ...observeWithAppliedControl(1, 100, forward, undefined), gameRunId: "run-2" }, reflectedDecisionIds: [] });
     assert.deepEqual(restarted.nextState.qualifyingReflectedForwardDecisionIds, []);
+  });
+
+  it("resets to and qualifies a valid forward discontinuity as the exact new plateau start", () => {
+    const forward = { accelerate: 1, brake: 0, steer: 0 }; const decision = { ...correlation("gap-forward"), appliedControlsDigest: digest(forward) };
+    let state = drive555EventWindowDetector.accept(drive555EventWindowDetector.initialState(), { observation: observeWithAppliedControl(1, 100, forward, undefined), reflectedDecisionIds: [] }).nextState;
+    const gap = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(3, 500, forward, decision), reflectedDecisionIds: ["gap-forward"] }); state = gap.nextState;
+    assert.equal(state.plateauStartedSourceObservationSequence, 3); assert.deepEqual(state.qualifyingReflectedForwardDecisionIds, ["gap-forward"]);
+    let drafts = gap.eventDrafts;
+    for (let sequence = 4, at = 750; at <= 4500; sequence += 1, at += 250) {
+      const accepted = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(sequence, at, forward, undefined), reflectedDecisionIds: [] }); state = accepted.nextState; drafts = accepted.eventDrafts;
+    }
+    assert.deepEqual(drafts, [{ type: "player.stalled", payload: { fromSourceObservationSequence: 3, toSourceObservationSequence: 19, plateauStartedAtAuthorityMs: 500, observedAtAuthorityMs: 4500, minimumZ: 2000, maximumZ: 2000, positionRange: 0, qualifyingDecisionIds: ["gap-forward"] } }]);
+  });
+
+  it("freezes qualifying IDs after one stall emission until a reset rearm", () => {
+    const forward = { accelerate: 1, brake: 0, steer: 0 }; let state = drive555EventWindowDetector.initialState(); let firstDrafts: import("../../contracts.js").GameEventDraft[] = [];
+    for (let sequence = 1, at = 0; at <= 4000; sequence += 1, at += 250) {
+      const id = sequence === 1 ? "first-forward" : `later-${sequence}`; const decision = { ...correlation(id), appliedControlsDigest: digest(forward) };
+      const accepted = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(sequence, at, forward, decision), reflectedDecisionIds: [id] }); state = accepted.nextState; firstDrafts = accepted.eventDrafts;
+    }
+    assert.deepEqual(firstDrafts[0]?.payload, { fromSourceObservationSequence: 1, toSourceObservationSequence: 17, plateauStartedAtAuthorityMs: 0, observedAtAuthorityMs: 4000, minimumZ: 2000, maximumZ: 2000, positionRange: 0, qualifyingDecisionIds: ["first-forward", ...Array.from({ length: 16 }, (_, index) => `later-${index + 2}`)].sort() });
+    const frozen = drive555EventWindowDetector.accept(state, { observation: observeWithAppliedControl(18, 4250, forward, { ...correlation("later-18"), appliedControlsDigest: digest(forward) }), reflectedDecisionIds: ["later-18"] });
+    assert.deepEqual(frozen.nextState.qualifyingReflectedForwardDecisionIds, state.qualifyingReflectedForwardDecisionIds);
+    assert.equal(frozen.eventDrafts.length, 0);
   });
 });

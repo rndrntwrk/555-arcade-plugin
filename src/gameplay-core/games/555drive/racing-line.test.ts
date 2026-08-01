@@ -54,4 +54,11 @@ describe("racing line controller", () => {
     assert.deepEqual(command(decide({ hazardAvoidanceBias: 0 }, centeredAhead), "brake"), { kind: "analog", controlId: "brake", value: 0 });
     assert.deepEqual(command(decide({ hazardAvoidanceBias: 1 }, centeredAhead), "brake"), { kind: "analog", controlId: "brake", value: .75 });
   });
+
+  it("brakes for an ahead hazard crossing the player plane within the reaction window but ignores an already-behind hazard", () => {
+    const crossing = raw(0, [{ id: "track:2:4", relativeX: 1, relativeZ: 5, relativeVelocityZ: -100 }]);
+    const behind = raw(0, [{ id: "track:2:4", relativeX: 1, relativeZ: -5, relativeVelocityZ: -100 }]);
+    assert.deepEqual(command(decide({}, crossing), "brake"), { kind: "analog", controlId: "brake", value: .75 });
+    assert.deepEqual(command(decide({}, behind), "brake"), { kind: "analog", controlId: "brake", value: 0 });
+  });
 });
