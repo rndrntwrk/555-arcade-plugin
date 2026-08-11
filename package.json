@@ -69,7 +69,7 @@
     "test:gameplay-core": "bun test src/gameplay-core",
     "test": "bun run test:gameplay-core",
     "release:manifest": "node ./scripts/release-manifest.mjs",
-    "release:preview": "bun run typecheck && bun run release:check && npm_config_cache=/tmp/npm-cache npm pack --dry-run",
+    "release:preview": "bun run build && bun run release:check && npm_config_cache=/tmp/npm-cache npm pack --dry-run",
     "prepublishOnly": "bun run build"
   },
   "agentConfig": {
