@@ -27,9 +27,9 @@ describe("racing line controller", () => {
 
   it("keeps portable canonical digest parity with the approved helper and hand-derived golden values", () => {
     const result = decide();
-    const unsignedIntent = { gameRunId: "run-1", leaseId: "lease-1", fence: 7, directiveId: "directive-1", decisionId: "directive-1:9:42", observationSequence: 9, decidedAtAgentMonotonicMs: 42, maximumAgeMs: 250, agentClockDomainId: "agent", commands: [{ kind: "analog", controlId: "accelerate", value: 1 }, { kind: "analog", controlId: "brake", value: .75 }, { kind: "analog", controlId: "steer", value: -1 }], reasonCode: "avoid_hazard" };
+    const unsignedIntent = { gameRunId: "run-1", leaseId: "lease-1", fence: 7, directiveId: "directive-1", decisionId: "a3da2e349e8d6f107e79866aaea88fd0d6fa00347cf28998031692b2f832d084", observationSequence: 9, decidedAtAgentMonotonicMs: 42, maximumAgeMs: 250, agentClockDomainId: "agent", commands: [{ kind: "analog", controlId: "accelerate", value: 1 }, { kind: "analog", controlId: "brake", value: .75 }, { kind: "analog", controlId: "steer", value: -1 }], reasonCode: "avoid_hazard" };
     const unsignedFixture = { schemaVersion: "555drive.initial-fixture.v1", fixtureId: "straight_start_1331_v1", trackSeed: 1331, playerX: 0, playerZ: 2000, playerVelocityX: 0, playerVelocityZ: 0 };
-    assert.equal(result.intent.semanticIntentDigest, "6183a09166a327a56237cb5d78d934ac06c1443e2c0d31ff22bd9f96b9b059c2");
+    assert.equal(result.intent.semanticIntentDigest, "42e74ca4086c14eccf10413c005bc23d5e0668cff4beb3cd30261a3f3e5b448a");
     assert.equal(DRIVE555_INITIAL_FIXTURE.fixtureDigest, "8c71295c3791e7ad062981fc852463beb241d2e3a40a885ff2ce18ab4a896bd5");
     assert.equal(result.intent.semanticIntentDigest, sha256Canonical(unsignedIntent));
     assert.equal(DRIVE555_INITIAL_FIXTURE.fixtureDigest, sha256Canonical(unsignedFixture));

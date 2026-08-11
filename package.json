@@ -67,6 +67,7 @@
     "typecheck": "tsc --noEmit",
     "release:check": "node ./scripts/release-check.mjs",
     "test:gameplay-core": "bun test src/gameplay-core",
+    "test:task9-control-compat": "bun test scripts/task9-game-control-compat.test.mjs",
     "test": "bun run test:gameplay-core",
     "release:manifest": "node ./scripts/release-manifest.mjs",
     "release:preview": "bun run build && bun run release:check && npm_config_cache=/tmp/npm-cache npm pack --dry-run",

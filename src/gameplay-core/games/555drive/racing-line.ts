@@ -76,7 +76,7 @@ export const racingLineController: DeterministicController<Drive555RawState, Rac
     const evade = threat ? -sign(threat.hazard.relativeX) * policy.hazardAvoidanceBias : 0;
     const steer = playing ? clamp(recenter + evade, -1, 1) : 0;
     const commands = [{ kind: "analog" as const, controlId: "accelerate", value: clamp(accelerate, 0, 1) }, { kind: "analog" as const, controlId: "brake", value: clamp(brake, 0, 1) }, { kind: "analog" as const, controlId: "steer", value: clamp(steer, -1, 1) }];
-    const base: Omit<GameControlIntent, "semanticIntentDigest"> = { gameRunId: observation.gameRunId, leaseId: directive.leaseId, fence: directive.fence, directiveId: directive.directiveId, decisionId: `${directive.directiveId}:${observation.sourceObservationSequence}:${now}`, observationSequence: observation.sourceObservationSequence, decidedAtAgentMonotonicMs: now, maximumAgeMs: 250, agentClockDomainId: directive.agentClockDomainId, commands, reasonCode: threat ? "avoid_hazard" : "pursue_objective" };
+    const base: Omit<GameControlIntent, "semanticIntentDigest"> = { gameRunId: observation.gameRunId, leaseId: directive.leaseId, fence: directive.fence, directiveId: directive.directiveId, decisionId: sha256(`${directive.directiveId}:${observation.sourceObservationSequence}:${now}`), observationSequence: observation.sourceObservationSequence, decidedAtAgentMonotonicMs: now, maximumAgeMs: 250, agentClockDomainId: directive.agentClockDomainId, commands, reasonCode: threat ? "avoid_hazard" : "pursue_objective" };
     const intent = { ...base, semanticIntentDigest: sha256Canonical(base) };
     return { intent, nextState: { previousSteer: steer } };
   },
