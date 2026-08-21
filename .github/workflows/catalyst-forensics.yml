@@ -7,6 +7,12 @@ on:
     paths:
       - forensics/catalyst/collector.py
       - .github/workflows/catalyst-forensics.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - forensics/catalyst/collector.py
+      - .github/workflows/catalyst-forensics.yml
 
 permissions:
   contents: write
@@ -19,6 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.head_ref || github.ref_name }}
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -34,6 +41,15 @@ jobs:
           BATCH: '20'
         run: python forensics/catalyst/collector.py
 
+      - name: Upload evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: catalyst-onchain-evidence
+          path: forensics/catalyst/output
+          if-no-files-found: warn
+          retention-days: 1
+
       - name: Save evidence outputs
         if: always()
         shell: bash
@@ -46,4 +62,4 @@ jobs:
             exit 0
           fi
           git commit -m 'Record catalyst raw on-chain evidence'
-          git push origin HEAD:${GITHUB_REF_NAME}
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
