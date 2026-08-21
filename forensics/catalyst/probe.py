@@ -10,6 +10,7 @@ from solders.pubkey import Pubkey
 MINT = "5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump"
 PUMP = "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
 POOL = "58osDYARtvC5xy6GakQaBm16kDA4XwFyH4UfvtrjMvxj"
+CREATED_MS = 1783652240000
 RPCS = [
     "https://solana-rpc.publicnode.com",
     "https://api.mainnet-beta.solana.com",
@@ -19,7 +20,12 @@ RPCS = [
 OUT = Path("forensics/catalyst/output")
 OUT.mkdir(parents=True, exist_ok=True)
 S = requests.Session()
-S.headers["User-Agent"] = "rndrntwrk-catalyst-probe/1.0"
+S.headers.update({
+    "User-Agent": "Mozilla/5.0 rndrntwrk-catalyst-probe/1.1",
+    "Accept": "application/json, text/plain, */*",
+    "Origin": "https://pump.fun",
+    "Referer": "https://pump.fun/",
+})
 CURVE = str(Pubkey.find_program_address(
     [b"bonding-curve", bytes(Pubkey.from_string(MINT))],
     Pubkey.from_string(PUMP),
@@ -47,6 +53,24 @@ def rpc(method, params):
             last = str(exc)
             time.sleep(min(0.5 + attempt * 0.3, 4))
     raise RuntimeError(last)
+
+
+def summarize_json(value):
+    if isinstance(value, list):
+        return {"type": "list", "length": len(value), "first": value[:3], "last": value[-1:]}
+    if isinstance(value, dict):
+        out = {"type": "dict", "keys": sorted(value.keys())}
+        for key in ("data", "trades", "items", "results", "holders", "activity"):
+            child = value.get(key)
+            if isinstance(child, list):
+                out[f"{key}_length"] = len(child)
+                out[f"{key}_first"] = child[:3]
+                out[f"{key}_last"] = child[-1:]
+        for key in ("cursor", "nextCursor", "next_cursor", "offset", "limit", "total", "hasMore", "has_more"):
+            if key in value:
+                out[key] = value[key]
+        return out
+    return {"type": type(value).__name__, "value": value}
 
 
 rows = []
@@ -79,6 +103,26 @@ for key, url in {
     except Exception as exc:
         metadata[key] = {"error": str(exc)}
 
+api_tests = {}
+for key, url in {
+    "frontend_trades_offset0": f"https://frontend-api-v3.pump.fun/trades/all/{MINT}?limit=1000&offset=0&minimumSize=0",
+    "frontend_trades_offset1000": f"https://frontend-api-v3.pump.fun/trades/all/{MINT}?limit=1000&offset=1000&minimumSize=0",
+    "swap_v2_trades": f"https://swap-api.pump.fun/v2/coins/{MINT}/trades?limit=100&cursor=0&minSolAmount=0&program=pump&createdTs={CREATED_MS}",
+    "market_activity": f"https://swap-api.pump.fun/v1/coins/{MINT}/market-activity?program=pump",
+    "advanced_holders": f"https://advanced-api-v2.pump.fun/coins/top-holders-and-sol-balance/{MINT}",
+    "coin_v2": f"https://frontend-api-v3.pump.fun/coins-v2/{MINT}",
+}.items():
+    try:
+        r = S.get(url, timeout=45)
+        entry = {"url": url, "status": r.status_code, "content_type": r.headers.get("content-type"), "text_prefix": r.text[:300]}
+        try:
+            entry["summary"] = summarize_json(r.json())
+        except Exception as exc:
+            entry["json_error"] = str(exc)
+        api_tests[key] = entry
+    except Exception as exc:
+        api_tests[key] = {"url": url, "error": str(exc)}
+
 result = {
     "mint": MINT,
     "pool": POOL,
@@ -90,6 +134,12 @@ result = {
     "failed_count": sum(row.get("err") is not None for row in rows),
     "endpoints_used": sorted(set(endpoints)),
     "metadata": metadata,
+    "api_tests": api_tests,
 }
 (OUT / "probe.json").write_text(json.dumps(result, indent=2))
-print(json.dumps({k: result[k] for k in ["curve","signature_count","truncated_at_50000","newest","oldest","failed_count"]}, indent=2))
+print(json.dumps({
+    "curve": result["curve"],
+    "signature_count": result["signature_count"],
+    "oldest": result["oldest"],
+    "api_statuses": {key: value.get("status") for key, value in api_tests.items()},
+}, indent=2))
