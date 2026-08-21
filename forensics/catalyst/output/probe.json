@@ -1,0 +1,435 @@
+{
+  "mint": "5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump",
+  "pool": "58osDYARtvC5xy6GakQaBm16kDA4XwFyH4UfvtrjMvxj",
+  "curve": "CGEyw2Nu58JiPPUPsxEVHc7jQeRbxSdjvbEZJrkycnkT",
+  "signature_count": 605,
+  "truncated_at_50000": false,
+  "newest": {
+    "signature": "5CiogZuE1GAtLpFmW7jhp7NjBp4PWYZeWv1DUb5YdGhq1LnBCcdzi8dGuVHSVKVHRo99yyEZwvpVPPCmbwByzNXY",
+    "slot": 440572861,
+    "time": "2026-08-21T00:00:45+00:00"
+  },
+  "oldest": {
+    "signature": "65NEthXDz6WwPbjYXingyvsYVZjd46Vu9JbdCh2TYrR5eNaCqL4XYs1hyngWm5aDfZ6v74BRuLTKATruqefVupRb",
+    "slot": 440345668,
+    "time": "2026-08-19T21:46:19+00:00"
+  },
+  "failed_count": 74,
+  "endpoints_used": [
+    "https://solana-rpc.publicnode.com"
+  ],
+  "metadata": {
+    "pump": {
+      "status": 200,
+      "body": {
+        "mint": "5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump",
+        "initialized": true,
+        "name": "catalyst",
+        "symbol": "catalyst",
+        "description": "",
+        "image_uri": "https://ipfs.io/ipfs/bafybeiapsdmqdwdasr6dqwfg2rxlhlyoc6zp74dzhped3vtedetjjvs7za",
+        "metadata_uri": "https://ipfs.io/ipfs/bafkreiel23sqi5mncpzs254mwvfgwcsnufcwwlmgig4ddoqz66jo77yzpm",
+        "twitter": "https://x.com/whats_ca/status/2075413775704850471?s=20",
+        "bonding_curve": "CGEyw2Nu58JiPPUPsxEVHc7jQeRbxSdjvbEZJrkycnkT",
+        "associated_bonding_curve": "72skYETmzesMYbr4sH8fzZv3LeBevgShyMYoGsfSdbEc",
+        "creator": "5SwBKASggA52FRNRZS6esVNRDNCgG18dAFcXbuAPhH7u",
+        "created_timestamp": 1783652240000,
+        "complete": true,
+        "virtual_sol_reserves": 114085644220,
+        "virtual_token_reserves": 282156454124121,
+        "total_supply": 1000000000000000,
+        "show_name": true,
+        "last_trade_timestamp": 1787293505000,
+        "market_cap": 6774.672970825248,
+        "nsfw": false,
+        "inverted": true,
+        "is_banned": false,
+        "pump_swap_pool": "58osDYARtvC5xy6GakQaBm16kDA4XwFyH4UfvtrjMvxj",
+        "real_sol_reserves": 0,
+        "real_token_reserves": 0,
+        "updated_at": 1787293507,
+        "livestream_ban_expiry": 0,
+        "reply_count": 0,
+        "is_currently_live": false,
+        "ath_market_cap": 3367700.460412549,
+        "ath_market_cap_timestamp": 1787268908000,
+        "hide_banner": false,
+        "program": "pump",
+        "token_program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "quote_mint": "11111111111111111111111111111111",
+        "base_decimals": 6,
+        "quote_decimals": 9,
+        "pool_address": "58osDYARtvC5xy6GakQaBm16kDA4XwFyH4UfvtrjMvxj",
+        "is_cashback_enabled": true,
+        "chain_id": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+        "multichain_family": 1,
+        "protocol": "pump",
+        "total_supply_str": "1000000000000000",
+        "market_cap_usd": 609788.3141039805,
+        "virtual_quote_reserves": 114085644220,
+        "real_quote_reserves": 0,
+        "market_cap_quote": 6774.672970825248,
+        "boost_mode": "COMPLETED",
+        "verified": false,
+        "usd_market_cap": 609930.4707475752
+      }
+    },
+    "dex": {
+      "status": 200,
+      "body": {
+        "schemaVersion": "1.0.0",
+        "pairs": [
+          {
+            "chainId": "solana",
+            "dexId": "pumpswap",
+            "url": "https://dexscreener.com/solana/58osdyartvc5xy6gakqabm16kda4xwfyh4ufvtrjmvxj",
+            "pairAddress": "58osDYARtvC5xy6GakQaBm16kDA4XwFyH4UfvtrjMvxj",
+            "baseToken": {
+              "address": "5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump",
+              "name": "catalyst",
+              "symbol": "catalyst"
+            },
+            "quoteToken": {
+              "address": "So11111111111111111111111111111111111111112",
+              "name": "Wrapped SOL",
+              "symbol": "SOL"
+            },
+            "priceNative": "0.000006888",
+            "priceUsd": "0.0006206",
+            "txns": {
+              "m5": {
+                "buys": 44,
+                "sells": 42
+              },
+              "h1": {
+                "buys": 950,
+                "sells": 702
+              },
+              "h6": {
+                "buys": 18511,
+                "sells": 14950
+              },
+              "h24": {
+                "buys": 79394,
+                "sells": 65991
+              }
+            },
+            "volume": {
+              "h24": 12784768.16,
+              "h6": 2273840.71,
+              "h1": 95328.54,
+              "m5": 4461.62
+            },
+            "priceChange": {
+              "m5": 1.01,
+              "h1": -15.76,
+              "h6": -21.55,
+              "h24": 1630
+            },
+            "liquidity": {
+              "usd": 80373.35,
+              "base": 66076975,
+              "quote": 436.9021
+            },
+            "fdv": 601247,
+            "marketCap": 601247,
+            "pairCreatedAt": 1787265471000,
+            "info": {
+              "imageUrl": "https://cdn.dexscreener.com/cms/images/E2mHxZLOGv7UcamG?width=800&height=800&quality=95&format=auto",
+              "header": "https://cdn.dexscreener.com/cms/images/yqyBaBULA8f3mixD?width=1500&height=500&quality=95&format=auto",
+              "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?timestamp=1787293500000",
+              "websites": [],
+              "socials": [
+                {
+                  "url": "https://x.com/i/communities/1884129264313737618",
+                  "type": "twitter"
+                }
+              ]
+            },
+            "boosts": {
+              "active": 100
+            }
+          }
+        ],
+        "pair": {
+          "chainId": "solana",
+          "dexId": "pumpswap",
+          "url": "https://dexscreener.com/solana/58osdyartvc5xy6gakqabm16kda4xwfyh4ufvtrjmvxj",
+          "pairAddress": "58osDYARtvC5xy6GakQaBm16kDA4XwFyH4UfvtrjMvxj",
+          "baseToken": {
+            "address": "5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump",
+            "name": "catalyst",
+            "symbol": "catalyst"
+          },
+          "quoteToken": {
+            "address": "So11111111111111111111111111111111111111112",
+            "name": "Wrapped SOL",
+            "symbol": "SOL"
+          },
+          "priceNative": "0.000006888",
+          "priceUsd": "0.0006206",
+          "txns": {
+            "m5": {
+              "buys": 44,
+              "sells": 42
+            },
+            "h1": {
+              "buys": 950,
+              "sells": 702
+            },
+            "h6": {
+              "buys": 18511,
+              "sells": 14950
+            },
+            "h24": {
+              "buys": 79394,
+              "sells": 65991
+            }
+          },
+          "volume": {
+            "h24": 12784768.16,
+            "h6": 2273840.71,
+            "h1": 95328.54,
+            "m5": 4461.62
+          },
+          "priceChange": {
+            "m5": 1.01,
+            "h1": -15.76,
+            "h6": -21.55,
+            "h24": 1630
+          },
+          "liquidity": {
+            "usd": 80373.35,
+            "base": 66076975,
+            "quote": 436.9021
+          },
+          "fdv": 601247,
+          "marketCap": 601247,
+          "pairCreatedAt": 1787265471000,
+          "info": {
+            "imageUrl": "https://cdn.dexscreener.com/cms/images/E2mHxZLOGv7UcamG?width=800&height=800&quality=95&format=auto",
+            "header": "https://cdn.dexscreener.com/cms/images/yqyBaBULA8f3mixD?width=1500&height=500&quality=95&format=auto",
+            "openGraph": "https://cdn.dexscreener.com/token-images/og/solana/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?timestamp=1787293500000",
+            "websites": [],
+            "socials": [
+              {
+                "url": "https://x.com/i/communities/1884129264313737618",
+                "type": "twitter"
+              }
+            ]
+          },
+          "boosts": {
+            "active": 100
+          }
+        }
+      }
+    }
+  },
+  "api_tests": {
+    "frontend_trades_offset0": {
+      "url": "https://frontend-api-v3.pump.fun/trades/all/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?limit=1000&offset=0&minimumSize=0",
+      "status": 404,
+      "content_type": "application/json; charset=utf-8",
+      "text_prefix": "{\"statusCode\":404,\"timestamp\":\"2026-08-21T06:25:08.832Z\",\"path\":\"/trades/all/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?limit=1000&offset=0&minimumSize=0\",\"message\":\"Cannot GET /trades/all/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?limit=1000&offset=0&minimumSize=0\",\"error\":\"Not Found\"}",
+      "summary": {
+        "type": "dict",
+        "keys": [
+          "error",
+          "message",
+          "path",
+          "statusCode",
+          "timestamp"
+        ]
+      }
+    },
+    "frontend_trades_offset1000": {
+      "url": "https://frontend-api-v3.pump.fun/trades/all/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?limit=1000&offset=1000&minimumSize=0",
+      "status": 404,
+      "content_type": "application/json; charset=utf-8",
+      "text_prefix": "{\"statusCode\":404,\"timestamp\":\"2026-08-21T06:25:08.915Z\",\"path\":\"/trades/all/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?limit=1000&offset=1000&minimumSize=0\",\"message\":\"Cannot GET /trades/all/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump?limit=1000&offset=1000&minimumSize=0\",\"error\":\"Not Found\"}",
+      "summary": {
+        "type": "dict",
+        "keys": [
+          "error",
+          "message",
+          "path",
+          "statusCode",
+          "timestamp"
+        ]
+      }
+    },
+    "swap_v2_trades": {
+      "url": "https://swap-api.pump.fun/v2/coins/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump/trades?limit=100&cursor=0&minSolAmount=0&program=pump&createdTs=1783652240000",
+      "status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "text_prefix": "{\"trades\":[{\"slotIndexId\":\"0004406283010004180000\",\"tx\":\"ZzUpStzUyLPTNgSLDHjHwAzuMgh1Pzkb9DHeWAUk9kM7QDQE2PnvbEaqYm5w1snTPQoFcbG5xTRYJf94AHTErb7\",\"timestamp\":\"2026-08-21T06:25:05.000Z\",\"userAddress\":\"HWGoJ1HaMFUiDgfD7FVxMaYJAE2A5JjF7si6CgWSvRFQ\",\"type\":\"buy\",\"program\":\"pump_amm\",\"priceUsd\":\"0.000609",
+      "summary": {
+        "type": "dict",
+        "keys": [
+          "pagination",
+          "trades"
+        ],
+        "trades_length": 100,
+        "trades_first": [
+          {
+            "slotIndexId": "0004406283010004180000",
+            "tx": "ZzUpStzUyLPTNgSLDHjHwAzuMgh1Pzkb9DHeWAUk9kM7QDQE2PnvbEaqYm5w1snTPQoFcbG5xTRYJf94AHTErb7",
+            "timestamp": "2026-08-21T06:25:05.000Z",
+            "userAddress": "HWGoJ1HaMFUiDgfD7FVxMaYJAE2A5JjF7si6CgWSvRFQ",
+            "type": "buy",
+            "program": "pump_amm",
+            "priceUsd": "0.0006097883141039805524863590686692989339353",
+            "priceSol": "0.000006774672970825247777873114861340950271473",
+            "amountUsd": "0.91064539158",
+            "amountSol": "0.010117158",
+            "baseAmount": "1478.626315",
+            "quoteAmount": "0.010117158",
+            "fillPriceUsd": "0.0006158725719554098426822601219565066377166",
+            "fillPriceSol": "0.000006842268325246193119456283990184497697107"
+          },
+          {
+            "slotIndexId": "0004406283010000600000",
+            "tx": "5v7h3eA5u71BtuQxj8vPx29mWUZdBV9T5jQNfLexvNx9i6iK7NwHJ6QCc9NspPzieBtwhNiteWha8UBcyXpfDpwH",
+            "timestamp": "2026-08-21T06:25:05.000Z",
+            "userAddress": "9ivVYm7j7SVkDquTE7Tdu6G7MaqP5NKtHpBiEB3ckKzU",
+            "type": "sell",
+            "program": "pump_amm",
+            "priceUsd": "0.0006097612034339894670955571497498554533497",
+            "priceSol": "0.000006774371774624924642768105207753088027438",
+            "amountUsd": "398.95248088864",
+            "amountSol": "4.432312864",
+            "baseAmount": "654402.901361",
+            "quoteAmount": "4.432312864",
+            "fillPriceUsd": "0.0006096435086991747509988466797603886976144",
+            "fillPriceSol": "0.000006773064200635204432827982221535259389117"
+          },
+          {
+            "slotIndexId": "0004406282800004670000",
+            "tx": "3UnrBNCNfbgs18Z6jn3jJuS7nyZNF9BApmUJf5bRb5V7VGKmGSgXbt7zCK1VMsh8RWJmcKkkfUT13siZ6ZRMsbSB",
+            "timestamp": "2026-08-21T06:24:56.000Z",
+            "userAddress": "B5qFV3aXkv2NPmpHmHKCDP9bREUxZpKy76p2Rdkd6ioL",
+            "type": "buy",
+            "program": "pump_amm",
+            "priceUsd": "0.0006219140266458958535418580077998270814794",
+            "priceSol": "0.00000690938814182752864728205763581632131407",
+            "amountUsd": "87.52451039517",
+            "amountSol": "0.972386517",
+            "baseAmount": "139636.41007",
+            "quoteAmount": "0.972386517",
+            "fillPriceUsd": "0.000626802925908033550751108908109442060508",
+            "fillPriceSol": "0.000006963703209732624716710464482940140656683"
+          }
+        ],
+        "trades_last": [
+          {
+            "slotIndexId": "0004406275290000310000",
+            "tx": "WhcbLCoLYqWxXqs1j9CmaeF2653FT6BNSmb4TSEMtXx8Y1NDqX5S2RHCQNkbV3pVXo7bLsRGGfF5HLAHSD3gnWo",
+            "timestamp": "2026-08-21T06:19:45.000Z",
+            "userAddress": "R32xAccFis3YzBzGwZ1C4QkGiehLxSao7gDmErA3kjk",
+            "type": "buy",
+            "program": "pump_amm",
+            "priceUsd": "0.0006103019013655936033035384840642156609516",
+            "priceSol": "0.000006731765953734762886648339775691767714004",
+            "amountUsd": "0.66910144308",
+            "amountSol": "0.007380338",
+            "baseAmount": "1085.507585",
+            "quoteAmount": "0.007380338",
+            "fillPriceUsd": "0.0006163949956001458985659690254490483362214",
+            "fillPriceSol": "0.000006798974140747252355680223091209445579323"
+          }
+        ]
+      }
+    },
+    "market_activity": {
+      "url": "https://swap-api.pump.fun/v1/coins/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump/market-activity?program=pump",
+      "status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "text_prefix": "{\"5m\":{\"numTxs\":90,\"volumeUSD\":4562.421036336393,\"numUsers\":75,\"numBuys\":44,\"numSells\":46,\"buyVolumeUSD\":2487.3380536129566,\"sellVolumeUSD\":2075.082982723436,\"numBuyers\":39,\"numSellers\":38,\"priceChangePercent\":-4.6616213838689955},\"1h\":{\"numTxs\":1584,\"volumeUSD\":90679.18705125681,\"numUsers\":694,\"num",
+      "summary": {
+        "type": "dict",
+        "keys": [
+          "1h",
+          "24h",
+          "5m",
+          "6h"
+        ]
+      }
+    },
+    "advanced_holders": {
+      "url": "https://advanced-api-v2.pump.fun/coins/top-holders-and-sol-balance/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump",
+      "status": 404,
+      "content_type": "application/json; charset=utf-8",
+      "text_prefix": "{\"statusCode\":404,\"timestamp\":\"2026-08-21T06:25:09.319Z\",\"path\":\"/coins/top-holders-and-sol-balance/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump\",\"message\":\"Internal server error\"}",
+      "summary": {
+        "type": "dict",
+        "keys": [
+          "message",
+          "path",
+          "statusCode",
+          "timestamp"
+        ]
+      }
+    },
+    "coin_v2": {
+      "url": "https://frontend-api-v3.pump.fun/coins-v2/5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump",
+      "status": 200,
+      "content_type": "application/json; charset=utf-8",
+      "text_prefix": "{\"mint\":\"5mH155ePpNWJb2GktpftLJbcTvoxFaUrv7XkZPDtpump\",\"initialized\":true,\"name\":\"catalyst\",\"symbol\":\"catalyst\",\"description\":\"\",\"image_uri\":\"https://ipfs.io/ipfs/bafybeiapsdmqdwdasr6dqwfg2rxlhlyoc6zp74dzhped3vtedetjjvs7za\",\"metadata_uri\":\"https://ipfs.io/ipfs/bafkreiel23sqi5mncpzs254mwvfgwcsnufcwwl",
+      "summary": {
+        "type": "dict",
+        "keys": [
+          "associated_bonding_curve",
+          "ath_market_cap",
+          "ath_market_cap_timestamp",
+          "base_decimals",
+          "bonding_curve",
+          "boost_mode",
+          "chain_id",
+          "complete",
+          "created_timestamp",
+          "creator",
+          "description",
+          "hide_banner",
+          "image_uri",
+          "initialized",
+          "inverted",
+          "is_banned",
+          "is_cashback_enabled",
+          "is_currently_live",
+          "last_trade_timestamp",
+          "livestream_ban_expiry",
+          "market_cap",
+          "market_cap_quote",
+          "market_cap_usd",
+          "metadata_uri",
+          "mint",
+          "multichain_family",
+          "name",
+          "nsfw",
+          "pool_address",
+          "program",
+          "protocol",
+          "pump_swap_pool",
+          "quote_decimals",
+          "quote_mint",
+          "real_quote_reserves",
+          "real_sol_reserves",
+          "real_token_reserves",
+          "reply_count",
+          "show_name",
+          "symbol",
+          "token_program",
+          "total_supply",
+          "total_supply_str",
+          "twitter",
+          "updated_at",
+          "usd_market_cap",
+          "verified",
+          "virtual_quote_reserves",
+          "virtual_sol_reserves",
+          "virtual_token_reserves"
+        ]
+      }
+    }
+  }
+}
