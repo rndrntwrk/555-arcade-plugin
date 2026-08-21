@@ -1,0 +1,335 @@
+{
+  "page0_status": 200,
+  "page0_pagination": {
+    "nextCursor": "0004406274080013390000-1787293134000",
+    "hasMore": true,
+    "limit": 100
+  },
+  "page0_trade_count": 100,
+  "page0_first": {
+    "slotIndexId": "0004406281710008540000",
+    "tx": "2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d",
+    "timestamp": "2026-08-21T06:24:10.000Z",
+    "userAddress": "264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y",
+    "type": "buy",
+    "program": "pump_amm",
+    "priceUsd": "0.0006217221615469242184485300093729453844749",
+    "priceSol": "0.000006896993490736799574157450185101542047493",
+    "amountUsd": "106.03069262350871306237622",
+    "amountSol": "1.176237622",
+    "baseAmount": "170986.332847",
+    "quoteAmount": "1.176237622",
+    "fillPriceUsd": "0.0006201120923412391281037988375356363841252",
+    "fillPriceSol": "0.000006879132398567242546693998693124682661322"
+  },
+  "page0_last": {
+    "slotIndexId": "0004406274080013390000",
+    "tx": "5jCRbGZj4eVkpHcYdZWWSfg7W2BY34upQLQenUZtwUvT8bi5thormSTGFW5tFWXUPi3mqQAg5xTbwj6jFJtdpKtw",
+    "timestamp": "2026-08-21T06:18:54.000Z",
+    "userAddress": "2QYg8eepXpCEKWhMzKxxsyjsBgv3CqLWURM8bc6eaRvq",
+    "type": "buy",
+    "program": "pump_amm",
+    "priceUsd": "0.0006218912825689454215714529936213055595879",
+    "priceSol": "0.000006858048671643246580813438320491236369318",
+    "amountUsd": "9.5040067506465",
+    "amountSol": "0.104807613",
+    "baseAmount": "15134.581539",
+    "quoteAmount": "0.104807613",
+    "fillPriceUsd": "0.0006279662722194079422310481629762356920095",
+    "fillPriceSol": "0.000006925042012554054534668954879783808999835"
+  },
+  "trade_keys": [
+    "amountSol",
+    "amountUsd",
+    "baseAmount",
+    "fillPriceSol",
+    "fillPriceUsd",
+    "priceSol",
+    "priceUsd",
+    "program",
+    "quoteAmount",
+    "slotIndexId",
+    "timestamp",
+    "tx",
+    "type",
+    "userAddress"
+  ],
+  "candidate_tests": [
+    {
+      "candidate": {
+        "source": "pagination.nextCursor",
+        "value": "0004406274080013390000-1787293134000"
+      },
+      "status": 200,
+      "pagination": {
+        "nextCursor": "0004406273880009650000-1787293125000",
+        "hasMore": true,
+        "limit": 5
+      },
+      "trade_count": 5,
+      "first": {
+        "slotIndexId": "0004406273960002110000",
+        "tx": "2VPChJyADymkPRPHxDJpsEZFBcTbLCdNBxn8EaxHaVRyjR4mxeRGfhR76kWzNoMuPo6f4MjtzEkVCYCKUdpQrhVR",
+        "timestamp": "2026-08-21T06:18:49.000Z",
+        "userAddress": "Cuiwy74mRBrbtNSoLrdUb52SGjedB7zYEpcFUj1xGvyK",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006221086410065212578653061084281804745201",
+        "priceSol": "0.000006854909190005287121714543812359960571993",
+        "amountUsd": "139.3280232430703233",
+        "amountSol": "1.535231765",
+        "baseAmount": "224722.928228",
+        "quoteAmount": "1.535231765",
+        "fillPriceUsd": "0.0006199991444651812224604811186823371442563",
+        "fillPriceSol": "0.000006831665006796192947657161212914452785412"
+      },
+      "last": {
+        "slotIndexId": "0004406273880009650000",
+        "tx": "4sC65vUeRQzSrDvmnWDFd6hCwGr1y7JdUiMXpYPCNLDHfMP3gbGrDpmaZ8wDxj7XoZ1nvLDWzQiGNArjgrrr3SpS",
+        "timestamp": "2026-08-21T06:18:45.000Z",
+        "userAddress": "HszHbFoMu3v25J9MJ4ynxsGehhP7BFEyHmRAw64HdPZW",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006176277381540191332754069716931813137795",
+        "priceSol": "0.000006805534884428303925871088440791864859753",
+        "amountUsd": "0.19802574802291064",
+        "amountSol": "0.002182012",
+        "baseAmount": "320.624549",
+        "quoteAmount": "0.002182012",
+        "fillPriceUsd": "0.0006176250341420695144587946071465663098679",
+        "fillPriceSol": "0.000006805505089381038006543909399775873057057"
+      },
+      "text_prefix": "{\"trades\":[{\"slotIndexId\":\"0004406273960002110000\",\"tx\":\"2VPChJyADymkPRPHxDJpsEZFBcTbLCdNBxn8EaxHaVRyjR4mxeRGfhR76kWzNoMuPo6f4MjtzEkVCYCKUdpQrhVR\",\"timestamp\":\"2026-08-21T06:18:49.000Z\",\"userAddress\":\"Cuiwy74mRBrbtNSoLrdUb52SGjedB7zYEpcFUj1xGvyK\",\"type\":\"buy\",\"program\":\"pump_amm\",\"priceUsd\":\"0.0006221086410065212578653061084281804745201\",\"priceSol\":\"0.000006854909190005287121714543812359960571993\",\"amountUsd\":\"139.3280232430703233\",\"amountSol\":\"1.535231765\",\"baseAmount\":\"224722.928228\",\"quoteAmo"
+    },
+    {
+      "candidate": {
+        "source": "pagination.hasMore",
+        "value": true
+      },
+      "status": 200,
+      "pagination": {
+        "nextCursor": "0004406281360000780000-1787293436000",
+        "hasMore": true,
+        "limit": 5
+      },
+      "trade_count": 5,
+      "first": {
+        "slotIndexId": "0004406281710008540000",
+        "tx": "2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d",
+        "timestamp": "2026-08-21T06:24:10.000Z",
+        "userAddress": "264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006217221615469242184485300093729453844749",
+        "priceSol": "0.000006896993490736799574157450185101542047493",
+        "amountUsd": "106.03069262350871306237622",
+        "amountSol": "1.176237622",
+        "baseAmount": "170986.332847",
+        "quoteAmount": "1.176237622",
+        "fillPriceUsd": "0.0006201120923412391281037988375356363841252",
+        "fillPriceSol": "0.000006879132398567242546693998693124682661322"
+      },
+      "last": {
+        "slotIndexId": "0004406281360000780000",
+        "tx": "5Wvc9VE9fohkN8fX5xR3wTYzJQbQ6HRBjhkapL3hhDwDLjjU3touceJjmerZs2vRUNAwAf5r19PZrbK1UHa3ZfsQ",
+        "timestamp": "2026-08-21T06:23:56.000Z",
+        "userAddress": "FRRSjo584dwjQncBjoeASt7wpruFLKQUJz7THcApAuVg",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006229477911853063241039587006289556468245",
+        "priceSol": "0.000006910589852843215305596728764618254325058",
+        "amountUsd": "23.88354662399729179949001",
+        "amountSol": "0.264949001",
+        "baseAmount": "37981.879206",
+        "quoteAmount": "0.264949001",
+        "fillPriceUsd": "0.0006288142430884358755203295667076425907793",
+        "fillPriceSol": "0.000006975668569820157518195651964761819583993"
+      },
+      "text_prefix": "{\"trades\":[{\"slotIndexId\":\"0004406281710008540000\",\"tx\":\"2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d\",\"timestamp\":\"2026-08-21T06:24:10.000Z\",\"userAddress\":\"264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y\",\"type\":\"buy\",\"program\":\"pump_amm\",\"priceUsd\":\"0.0006217221615469242184485300093729453844749\",\"priceSol\":\"0.000006896993490736799574157450185101542047493\",\"amountUsd\":\"106.03069262350871306237622\",\"amountSol\":\"1.176237622\",\"baseAmount\":\"170986.332847\",\"q"
+    },
+    {
+      "candidate": {
+        "source": "pagination.limit",
+        "value": 100
+      },
+      "status": 200,
+      "pagination": {
+        "nextCursor": "0004406281360000780000-1787293436000",
+        "hasMore": true,
+        "limit": 5
+      },
+      "trade_count": 5,
+      "first": {
+        "slotIndexId": "0004406281710008540000",
+        "tx": "2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d",
+        "timestamp": "2026-08-21T06:24:10.000Z",
+        "userAddress": "264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006217221615469242184485300093729453844749",
+        "priceSol": "0.000006896993490736799574157450185101542047493",
+        "amountUsd": "106.03069262350871306237622",
+        "amountSol": "1.176237622",
+        "baseAmount": "170986.332847",
+        "quoteAmount": "1.176237622",
+        "fillPriceUsd": "0.0006201120923412391281037988375356363841252",
+        "fillPriceSol": "0.000006879132398567242546693998693124682661322"
+      },
+      "last": {
+        "slotIndexId": "0004406281360000780000",
+        "tx": "5Wvc9VE9fohkN8fX5xR3wTYzJQbQ6HRBjhkapL3hhDwDLjjU3touceJjmerZs2vRUNAwAf5r19PZrbK1UHa3ZfsQ",
+        "timestamp": "2026-08-21T06:23:56.000Z",
+        "userAddress": "FRRSjo584dwjQncBjoeASt7wpruFLKQUJz7THcApAuVg",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006229477911853063241039587006289556468245",
+        "priceSol": "0.000006910589852843215305596728764618254325058",
+        "amountUsd": "23.88354662399729179949001",
+        "amountSol": "0.264949001",
+        "baseAmount": "37981.879206",
+        "quoteAmount": "0.264949001",
+        "fillPriceUsd": "0.0006288142430884358755203295667076425907793",
+        "fillPriceSol": "0.000006975668569820157518195651964761819583993"
+      },
+      "text_prefix": "{\"trades\":[{\"slotIndexId\":\"0004406281710008540000\",\"tx\":\"2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d\",\"timestamp\":\"2026-08-21T06:24:10.000Z\",\"userAddress\":\"264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y\",\"type\":\"buy\",\"program\":\"pump_amm\",\"priceUsd\":\"0.0006217221615469242184485300093729453844749\",\"priceSol\":\"0.000006896993490736799574157450185101542047493\",\"amountUsd\":\"106.03069262350871306237622\",\"amountSol\":\"1.176237622\",\"baseAmount\":\"170986.332847\",\"q"
+    },
+    {
+      "candidate": {
+        "source": "last.slotIndexId",
+        "value": "0004406274080013390000"
+      },
+      "status": 200,
+      "pagination": {
+        "nextCursor": "0004406281360000780000-1787293436000",
+        "hasMore": true,
+        "limit": 5
+      },
+      "trade_count": 5,
+      "first": {
+        "slotIndexId": "0004406281710008540000",
+        "tx": "2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d",
+        "timestamp": "2026-08-21T06:24:10.000Z",
+        "userAddress": "264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006217221615469242184485300093729453844749",
+        "priceSol": "0.000006896993490736799574157450185101542047493",
+        "amountUsd": "106.03069262350871306237622",
+        "amountSol": "1.176237622",
+        "baseAmount": "170986.332847",
+        "quoteAmount": "1.176237622",
+        "fillPriceUsd": "0.0006201120923412391281037988375356363841252",
+        "fillPriceSol": "0.000006879132398567242546693998693124682661322"
+      },
+      "last": {
+        "slotIndexId": "0004406281360000780000",
+        "tx": "5Wvc9VE9fohkN8fX5xR3wTYzJQbQ6HRBjhkapL3hhDwDLjjU3touceJjmerZs2vRUNAwAf5r19PZrbK1UHa3ZfsQ",
+        "timestamp": "2026-08-21T06:23:56.000Z",
+        "userAddress": "FRRSjo584dwjQncBjoeASt7wpruFLKQUJz7THcApAuVg",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006229477911853063241039587006289556468245",
+        "priceSol": "0.000006910589852843215305596728764618254325058",
+        "amountUsd": "23.88354662399729179949001",
+        "amountSol": "0.264949001",
+        "baseAmount": "37981.879206",
+        "quoteAmount": "0.264949001",
+        "fillPriceUsd": "0.0006288142430884358755203295667076425907793",
+        "fillPriceSol": "0.000006975668569820157518195651964761819583993"
+      },
+      "text_prefix": "{\"trades\":[{\"slotIndexId\":\"0004406281710008540000\",\"tx\":\"2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d\",\"timestamp\":\"2026-08-21T06:24:10.000Z\",\"userAddress\":\"264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y\",\"type\":\"buy\",\"program\":\"pump_amm\",\"priceUsd\":\"0.0006217221615469242184485300093729453844749\",\"priceSol\":\"0.000006896993490736799574157450185101542047493\",\"amountUsd\":\"106.03069262350871306237622\",\"amountSol\":\"1.176237622\",\"baseAmount\":\"170986.332847\",\"q"
+    },
+    {
+      "candidate": {
+        "source": "first.slotIndexId",
+        "value": "0004406281710008540000"
+      },
+      "status": 200,
+      "pagination": {
+        "nextCursor": "0004406281360000780000-1787293436000",
+        "hasMore": true,
+        "limit": 5
+      },
+      "trade_count": 5,
+      "first": {
+        "slotIndexId": "0004406281710008540000",
+        "tx": "2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d",
+        "timestamp": "2026-08-21T06:24:10.000Z",
+        "userAddress": "264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006217221615469242184485300093729453844749",
+        "priceSol": "0.000006896993490736799574157450185101542047493",
+        "amountUsd": "106.03069262350871306237622",
+        "amountSol": "1.176237622",
+        "baseAmount": "170986.332847",
+        "quoteAmount": "1.176237622",
+        "fillPriceUsd": "0.0006201120923412391281037988375356363841252",
+        "fillPriceSol": "0.000006879132398567242546693998693124682661322"
+      },
+      "last": {
+        "slotIndexId": "0004406281360000780000",
+        "tx": "5Wvc9VE9fohkN8fX5xR3wTYzJQbQ6HRBjhkapL3hhDwDLjjU3touceJjmerZs2vRUNAwAf5r19PZrbK1UHa3ZfsQ",
+        "timestamp": "2026-08-21T06:23:56.000Z",
+        "userAddress": "FRRSjo584dwjQncBjoeASt7wpruFLKQUJz7THcApAuVg",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006229477911853063241039587006289556468245",
+        "priceSol": "0.000006910589852843215305596728764618254325058",
+        "amountUsd": "23.88354662399729179949001",
+        "amountSol": "0.264949001",
+        "baseAmount": "37981.879206",
+        "quoteAmount": "0.264949001",
+        "fillPriceUsd": "0.0006288142430884358755203295667076425907793",
+        "fillPriceSol": "0.000006975668569820157518195651964761819583993"
+      },
+      "text_prefix": "{\"trades\":[{\"slotIndexId\":\"0004406281710008540000\",\"tx\":\"2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d\",\"timestamp\":\"2026-08-21T06:24:10.000Z\",\"userAddress\":\"264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y\",\"type\":\"buy\",\"program\":\"pump_amm\",\"priceUsd\":\"0.0006217221615469242184485300093729453844749\",\"priceSol\":\"0.000006896993490736799574157450185101542047493\",\"amountUsd\":\"106.03069262350871306237622\",\"amountSol\":\"1.176237622\",\"baseAmount\":\"170986.332847\",\"q"
+    },
+    {
+      "candidate": {
+        "source": "literal.1",
+        "value": 1
+      },
+      "status": 200,
+      "pagination": {
+        "nextCursor": "0004406281360000780000-1787293436000",
+        "hasMore": true,
+        "limit": 5
+      },
+      "trade_count": 5,
+      "first": {
+        "slotIndexId": "0004406281710008540000",
+        "tx": "2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d",
+        "timestamp": "2026-08-21T06:24:10.000Z",
+        "userAddress": "264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006217221615469242184485300093729453844749",
+        "priceSol": "0.000006896993490736799574157450185101542047493",
+        "amountUsd": "106.03069262350871306237622",
+        "amountSol": "1.176237622",
+        "baseAmount": "170986.332847",
+        "quoteAmount": "1.176237622",
+        "fillPriceUsd": "0.0006201120923412391281037988375356363841252",
+        "fillPriceSol": "0.000006879132398567242546693998693124682661322"
+      },
+      "last": {
+        "slotIndexId": "0004406281360000780000",
+        "tx": "5Wvc9VE9fohkN8fX5xR3wTYzJQbQ6HRBjhkapL3hhDwDLjjU3touceJjmerZs2vRUNAwAf5r19PZrbK1UHa3ZfsQ",
+        "timestamp": "2026-08-21T06:23:56.000Z",
+        "userAddress": "FRRSjo584dwjQncBjoeASt7wpruFLKQUJz7THcApAuVg",
+        "type": "buy",
+        "program": "pump_amm",
+        "priceUsd": "0.0006229477911853063241039587006289556468245",
+        "priceSol": "0.000006910589852843215305596728764618254325058",
+        "amountUsd": "23.88354662399729179949001",
+        "amountSol": "0.264949001",
+        "baseAmount": "37981.879206",
+        "quoteAmount": "0.264949001",
+        "fillPriceUsd": "0.0006288142430884358755203295667076425907793",
+        "fillPriceSol": "0.000006975668569820157518195651964761819583993"
+      },
+      "text_prefix": "{\"trades\":[{\"slotIndexId\":\"0004406281710008540000\",\"tx\":\"2xKjBvAbWcfgVBTAqVurmU9PGZNkeB7QiqkPUtdtUh2WFczFVbMPRtLZs8aLc2BaqsmjAinBdfRu6WqtqUNrsC8d\",\"timestamp\":\"2026-08-21T06:24:10.000Z\",\"userAddress\":\"264qqPadB44XLE7R7TbGhCFFAJpXDvduK8qXh8qDTn7y\",\"type\":\"buy\",\"program\":\"pump_amm\",\"priceUsd\":\"0.0006217221615469242184485300093729453844749\",\"priceSol\":\"0.000006896993490736799574157450185101542047493\",\"amountUsd\":\"106.03069262350871306237622\",\"amountSol\":\"1.176237622\",\"baseAmount\":\"170986.332847\",\"q"
+    }
+  ]
+}
