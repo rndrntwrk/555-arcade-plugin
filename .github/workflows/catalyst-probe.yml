@@ -8,6 +8,13 @@ on:
       - forensics/catalyst/probe.py
       - forensics/catalyst/pagination_probe.py
       - .github/workflows/catalyst-probe.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - forensics/catalyst/probe.py
+      - forensics/catalyst/pagination_probe.py
+      - .github/workflows/catalyst-probe.yml
 
 permissions:
   contents: write
@@ -19,6 +26,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -33,4 +43,4 @@ jobs:
           git add forensics/catalyst/output/probe.json forensics/catalyst/output/pagination_probe.json forensics/catalyst/output/pump_trade_page0.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Record catalyst curve and archive probes'
-          git push origin HEAD:${GITHUB_REF_NAME}
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
